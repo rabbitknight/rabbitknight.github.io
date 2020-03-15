@@ -1,0 +1,1110 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,MVP,RxJava2,Retrofit2,Dagger2,Custom View,Material Design,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="银子摸鱼用gank.io公开API写了个练手项目。主要是在实际的项目中使用一些主流的技术，诸如MVP，RxJava，Dagger等。项目地址：GankU:https://github.com/rabbitknight/GankU">
+<meta name="keywords" content="Android,MVP,RxJava2,Retrofit2,Dagger2,Custom View,Material Design">
+<meta property="og:type" content="article">
+<meta property="og:title" content="写了一个Gank客户端">
+<meta property="og:url" content="https://rabbitknight.net/2018/01/25/A008/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:description" content="银子摸鱼用gank.io公开API写了个练手项目。主要是在实际的项目中使用一些主流的技术，诸如MVP，RxJava，Dagger等。项目地址：GankU:https://github.com/rabbitknight/GankU">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_launcher2.gif?raw=true">
+<meta property="og:image" content="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_main1.gif?raw=true">
+<meta property="og:image" content="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_main2.gif?raw=true">
+<meta property="og:image" content="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_web.gif?raw=true">
+<meta property="og:updated_time" content="2018-01-25T04:20:49.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="写了一个Gank客户端">
+<meta name="twitter:description" content="银子摸鱼用gank.io公开API写了个练手项目。主要是在实际的项目中使用一些主流的技术，诸如MVP，RxJava，Dagger等。项目地址：GankU:https://github.com/rabbitknight/GankU">
+<meta name="twitter:image" content="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_launcher2.gif?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> 写了一个Gank客户端 | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                写了一个Gank客户端
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-01-25T10:10:10+08:00" content="2018-01-25">
+              2018-01-25
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2018/01/25/A008/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2018/01/25/A008/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2018/01/25/A008/" class="leancloud_visitors" data-flag-title="写了一个Gank客户端">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="银子"><a href="#银子" class="headerlink" title="银子"></a><center>银子</center></h3><p>摸鱼用<a href="http://gank.io/api" target="_blank" rel="noopener">gank.io</a>公开API写了个练手项目。主要是在实际的项目中使用一些主流的技术，诸如MVP，RxJava，Dagger等。<br><strong>项目地址：</strong><a href="https://github.com/rabbitknight/GankU" target="_blank" rel="noopener">GankU:https://github.com/rabbitknight/GankU</a><br><a id="more"></a></p>
+<h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a><center>TL;DR</center></h3><table>
+<thead>
+<tr>
+<th>技术</th>
+<th>概要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RxJava2+Retrofit</td>
+<td>RxJava仅配合Retrofit，作为网络请求资源的处理使用。</td>
+</tr>
+<tr>
+<td>MVP</td>
+<td>使用mvp架构思想，M层未做较优处理。V、P层隔离、仅接口访问。Activity与Fragment既是V层，又是P与V结合的地方。</td>
+</tr>
+<tr>
+<td>Dagger2</td>
+<td>强化Dagger的使用，P层、控件、网络请求均使用Dagger注入到Act\Frag。</td>
+</tr>
+<tr>
+<td>M D</td>
+<td>使用ToolBar、NavView、SRL、CoordinatorLayout等。</td>
+</tr>
+<tr>
+<td>Animator</td>
+<td>部分使用了属性动画、包含animated-vector向量动画的使用。</td>
+</tr>
+<tr>
+<td>Custom View</td>
+<td>为ImageView添加包装类实现手势操作，一个使用了贝塞尔曲线的indicator，自定义的ItemDecoration等。</td>
+</tr>
+<tr>
+<td>Web</td>
+<td>使用腾讯X5内核作为WebView，待添加CustomTabs获取更优秀的效果。</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a><center>项目结构</center></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">└─ganku</span><br><span class="line">    ├─common			+ common包，静态变量等</span><br><span class="line">    ├─di				+ dagger依赖注入包</span><br><span class="line">    │  ├─component		- 注射器 </span><br><span class="line">    │  ├─module			- 模块</span><br><span class="line">    │  └─scope				- 作用域</span><br><span class="line">    ├─mvp				+ mvp包，项目为mvp架构</span><br><span class="line">    │  ├─model			+ 数据层，有缺陷</span><br><span class="line">    │  │  └─remote			- bean类等</span><br><span class="line">    │  ├─presenter		+ 表现层，专注业务逻辑处理</span><br><span class="line">    │  │  ├─base			- 最基本接口</span><br><span class="line">    │  │  ├─impl			- 接口实现</span><br><span class="line">    │  │  └─interfaces		- 集成接口</span><br><span class="line">    │  └─view			+ 显示层，专注View的显示</span><br><span class="line">    │      ├─base			- 最基本的接口</span><br><span class="line">    │      ├─interfaces		- 集成接口</span><br><span class="line">    │      └─ui				+ ui显示包，接口实现</span><br><span class="line">    │          ├─activity		- Activity</span><br><span class="line">    │          ├─adapter		- 适配器</span><br><span class="line">    │          ├─fragment		- 碎片，用于显示</span><br><span class="line">    │          ├─listener		- 监听器</span><br><span class="line">    │          └─widget			- 自定义组件</span><br><span class="line">    ├─net				+ 网络访问包，注：已被废弃</span><br><span class="line">    │  └─api				- Retorfit的接口</span><br><span class="line">    └─utils				+ utils辅助类，String处理等</span><br></pre></td></tr></table></figure>
+<h3 id="运行Demo"><a href="#运行Demo" class="headerlink" title="运行Demo"></a><center>运行Demo</center></h3><table>
+<thead>
+<tr>
+<th>desc</th>
+<th>img</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>launcher</td>
+<td><img src="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_launcher2.gif?raw=true" alt="launcher"></td>
+</tr>
+<tr>
+<td>main</td>
+<td><img src="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_main1.gif?raw=true" alt="main1"></td>
+</tr>
+<tr>
+<td>main2</td>
+<td><img src="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_main2.gif?raw=true" alt="main2"></td>
+</tr>
+<tr>
+<td>Web</td>
+<td><img src="https://github.com/rabbitknight/GankU/blob/master/gifs/gif_web.gif?raw=true" alt="web"></td>
+</tr>
+<tr>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用技术："><a href="#使用技术：" class="headerlink" title="使用技术："></a><center>使用技术：</center></h3><p>参考build.gradle<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">compile &apos;com.android.support:appcompat-v7:26.1.0&apos;</span><br><span class="line">compile &apos;com.android.support:support-v4:26.1.0&apos;</span><br><span class="line">compile &apos;com.android.support:design:26.1.0&apos;</span><br><span class="line">compile &apos;com.android.support:recyclerview-v7:26.1.0&apos;</span><br><span class="line">compile &apos;com.android.support:cardview-v7:26.1.0&apos;</span><br><span class="line">compile &apos;com.android.support:customtabs:26.1.0&apos;</span><br><span class="line">testCompile &apos;junit:junit:4.12&apos;</span><br><span class="line">compile &apos;com.google.dagger:dagger:2.13&apos;</span><br><span class="line">annotationProcessor &apos;com.google.dagger:dagger-compiler:2.13&apos;</span><br><span class="line">compile &apos;io.reactivex.rxjava2:rxandroid:2.0.1&apos;</span><br><span class="line">compile &apos;io.reactivex.rxjava2:rxjava:2.1.6&apos;</span><br><span class="line">compile &apos;com.github.bumptech.glide:glide:4.3.1&apos;</span><br><span class="line">annotationProcessor &apos;com.github.bumptech.glide:compiler:4.3.1&apos;</span><br><span class="line">compile &apos;com.squareup.retrofit2:retrofit:2.3.0&apos;</span><br><span class="line">compile &apos;com.squareup.retrofit2:adapter-rxjava:2.3.0&apos;</span><br><span class="line">compile &apos;com.squareup.retrofit2:adapter-rxjava2:2.3.0&apos;</span><br><span class="line">compile &apos;com.squareup.retrofit2:converter-gson:2.3.0&apos;</span><br><span class="line">compile &apos;com.squareup.okhttp3:okhttp:3.9.0&apos;</span><br><span class="line">compile &apos;com.jakewharton:butterknife:8.4.0&apos;</span><br><span class="line">annotationProcessor &apos;com.jakewharton:butterknife-compiler:8.4.0&apos;</span><br></pre></td></tr></table></figure></p>
+<h3 id="一点点总结"><a href="#一点点总结" class="headerlink" title="一点点总结"></a><center>一点点总结<center></center></center></h3><ol>
+<li>关于Dagger2的依赖注入，看到一些github上的同级别项目，并没有将Dagger这一流痞的库很好的使用他们在Activity中仍然很多<code>new Clazz();</code>。为此，我强化了Dagger的使用，致使项目中MVP中的P层使用依赖注入到Activity\Fragment，同时很多的View要么使用ButterKnife，要么使用Dagger注入到相应位置，使得在项目中基本看不到<code>new Clazz();</code> 这种方法。</li>
+<li>关于MVP项目，借助于Dagger2的使用，使得MVP三层分离的比较彻底。三层各司其职，仅通过接口访问，OOP。<ul>
+<li>View层专注于界面的显示，其向外暴露的接口仅用于控制界面的显示效果。</li>
+<li>Presenter层专注于事务，它通过View层接口传递的信息，进行逻辑处理，并调用V层暴露的接口控制View层界面做出改变。</li>
+<li>Model层专注于数据，道理上说，V层的事件交于P层处理，P层可能会调用M层的接口获取一些数据。然而因为强化Dagger的使用，我将RRO的网络访问框架直接注入到了P层–，那么M层就一下子消失了–，所以实际上框架可能实际只是MV<strike>p</strike>，<strong>还不是MVP。但是使用思想并不意味着要完全实现。</strong></li>
+<li>Activity\Fragment既是View又是P层与V层结合的地方。Act与Frag对于Android来说既是一个View显示的地方又是一个做逻辑处理。</li>
+<li>在MVC思想中，V实际代表的是XML布局，那么C在Android中就是Activity等，对应的很好。但是对于MVP，我们将P层抽离，但是P层又仅能在Activity中被调用，依赖Act存在。而Act又是某种意义上的View，这时的Activity的地位就稍微有点尴尬了。因此实际上，私以为Android中的MVP思想实际是一种<strong>代理模式</strong>。<del>这种说法对于大部分和用户交互的App应该是没问题的。</del></li>
+</ul>
+</li>
+<li>Rx系函数式编程。函数式编程、响应式编程我了解比较浅，对于这种编程思想来说，一个函数的输出作为另一种函数的输入。函数相互调用形成一种链状的<strong>“流”</strong>。这与观察者模式不谋而合，通过对这种思想的使用，使得整个工程结构更加清晰，我们只需关注每个函数流的流向即每个函数的功能，将每个逻辑单独抽离，而不关注具体的实现，这使得项目更加清晰，也符合OOP的原则、高内聚低耦合。</li>
+<li>关于自定义View，至今，据我了解，Android从业者呈现一种金字塔形势分布，较为低级的人员充斥在这个市场当中，但越往上的能力者越少。我也在想从13年移动行业的井喷式增长开始，到18年我该毕业的今天，拥有5年左右的开发者，他们在整个行业中处于什么样的地位，他们拥有怎样的技能树。我遇到的人，还是较少，暂不能得到答案。但以不变应万变，基础的东西的变化仍然是较低的，对于自定义View的掌握肯定是必要的。如今开发，想要获得一个效果，搜一下第三方库就很多。虽不要重复早轮子，但是前提是会造轮子。不需要知道细枝末节，但是对于脉络原理还是要知道的。为此学习一些自定义View是很必要的。我在这个项目中实现了一个贝塞尔拟合圆的ViewPager指示器，实际挺简单，300行左右的代码但是对于自定义View的收获还是挺多的。</li>
+<li>MD，Material Design是一种设计风格，与IOS的扁平化相对应。目前大部分的App，还是喜欢和IOS对齐，这也没错。我所了解的App中Android端的BiliBili、网易云等对于MD的应用最为出色。可能我们不是写UI的不需要设计的很好看，但是去发现美（无论是何种美）确实应该去做的。</li>
+<li>。。。</li>
+</ol>
+<h3 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a><center>TODO<center></center></center></h3><ul>
+<li>IMG<ul>
+<li>ImageViewWrap，手势包装类的优化</li>
+<li>妹子图的下载收藏等</li>
+</ul>
+</li>
+<li>Web<ul>
+<li>CustomTab的集成，获取更好体验</li>
+<li>右上角分享、复制URL等功能</li>
+</ul>
+</li>
+<li>主页<ul>
+<li>主题切换</li>
+<li>部分细节优化</li>
+</ul>
+</li>
+<li>…<h3 id="Thanks"><a href="#Thanks" class="headerlink" title="Thanks"></a><center>Thanks</center></h3></li>
+</ul>
+<ol>
+<li>首先感谢<a href="http://gank.io/api" target="_blank" rel="noopener">gank.io</a> 家的API。</li>
+<li>然后某些界面的设计理念参考<del>（读书人的事情不能用抄）</del>了一些例子。</li>
+</ol>
+<ul>
+<li><a href="https://github.com/qdxxxx/BezierViewPager" target="_blank" rel="noopener">BezierViewPager</a></li>
+<li><a href="https://github.com/Wensibob/GankClient" target="_blank" rel="noopener">GankClient</a></li>
+<li><a href="https://github.com/Bakumon/UGank" target="_blank" rel="noopener">UGank</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/MVP/" rel="tag">#MVP</a>
+          
+            <a href="/tags/RxJava2/" rel="tag">#RxJava2</a>
+          
+            <a href="/tags/Retrofit2/" rel="tag">#Retrofit2</a>
+          
+            <a href="/tags/Dagger2/" rel="tag">#Dagger2</a>
+          
+            <a href="/tags/Custom-View/" rel="tag">#Custom View</a>
+          
+            <a href="/tags/Material-Design/" rel="tag">#Material Design</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/08/A007/" rel="next" title="Android OpenGL简单总结">
+                <i class="fa fa-chevron-left"></i> Android OpenGL简单总结
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/26/A009/" rel="prev" title="持久化方案断电测试对比">
+                持久化方案断电测试对比 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#银子"><span class="nav-number">1.</span> <span class="nav-text">银子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">2.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目结构"><span class="nav-number">3.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行Demo"><span class="nav-number">4.</span> <span class="nav-text">运行Demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用技术："><span class="nav-number">5.</span> <span class="nav-text">使用技术：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一点点总结"><span class="nav-number">6.</span> <span class="nav-text">一点点总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TODO"><span class="nav-number">7.</span> <span class="nav-text">TODO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thanks"><span class="nav-number">8.</span> <span class="nav-text">Thanks</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2018/01/25/A008/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+

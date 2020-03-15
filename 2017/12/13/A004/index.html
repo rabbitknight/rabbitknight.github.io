@@ -1,0 +1,1021 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,RecyclerView,UI,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="银子RecyclerView的ItemDecoration，正如其名，是列表子项的装饰类。它其实是一个接口，方便我们对Item一些效果进行装饰。比如，常用的是添加分割线。一个RecyclerView的装饰器绘制层次如下：">
+<meta name="keywords" content="Android,RecyclerView,UI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView之ItemDecoration">
+<meta property="og:url" content="https://rabbitknight.net/2017/12/13/A004/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:description" content="银子RecyclerView的ItemDecoration，正如其名，是列表子项的装饰类。它其实是一个接口，方便我们对Item一些效果进行装饰。比如，常用的是添加分割线。一个RecyclerView的装饰器绘制层次如下：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1638147-9e8a8158237c005c.png?imageMogr2/auto-orient/">
+<meta property="og:updated_time" content="2018-05-30T02:08:30.416Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RecyclerView之ItemDecoration">
+<meta name="twitter:description" content="银子RecyclerView的ItemDecoration，正如其名，是列表子项的装饰类。它其实是一个接口，方便我们对Item一些效果进行装饰。比如，常用的是添加分割线。一个RecyclerView的装饰器绘制层次如下：">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1638147-9e8a8158237c005c.png?imageMogr2/auto-orient/">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> RecyclerView之ItemDecoration | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                RecyclerView之ItemDecoration
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-13T10:00:00+08:00" content="2017-12-13">
+              2017-12-13
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2017/12/13/A004/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2017/12/13/A004/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/12/13/A004/" class="leancloud_visitors" data-flag-title="RecyclerView之ItemDecoration">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="银子"><a href="#银子" class="headerlink" title="银子"></a><center>银子</center></h3><p>RecyclerView的ItemDecoration，正如其名，是列表子项的装饰类。它其实是一个接口，方便我们对Item一些效果进行装饰。比如，常用的是添加分割线。<br>一个RecyclerView的装饰器绘制层次如下：<br><img src="https://upload-images.jianshu.io/upload_images/1638147-9e8a8158237c005c.png?imageMogr2/auto-orient/" alt="Decoration绘制层次"><br><a id="more"></a></p>
+<h3 id="重要方法"><a href="#重要方法" class="headerlink" title="重要方法"></a><center>重要方法</center></h3><h4 id="getItemOffsets"><a href="#getItemOffsets" class="headerlink" title="getItemOffsets"></a>getItemOffsets</h4><p>在RecyclerView的列表中，每一项占用固定的空间，当我们为其做装饰时，如果不想装饰物如分割线与Item堆叠，就需要对Item进行一定的偏移，来让装饰物填充到Item偏移后空缺出的空间。Item View的大小包含有偏移后的item大小、decoration的大小。<br>不过注意decoration仅为装饰物，在并不能在adapter中获取到item的点击事件。<br>getItemOffsets有三个参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getItemOffsets(Rect outRect, View view, RecyclerView parent, State state)</span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>outRect</td>
+<td>通过四个参数，指定偏移矩形的上下左右的边距。</td>
+</tr>
+<tr>
+<td>parent</td>
+<td>当前装饰器所在的RecyclerView</td>
+</tr>
+<tr>
+<td>state</td>
+<td>RecyclerView的状态</td>
+</tr>
+</tbody>
+</table>
+<p>在Google的样例中实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (mOrientation == VERTICAL_LIST) &#123;</span><br><span class="line">    outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当需要的状态为Vertical即列表为竖直，我们需要为Item的底部添加装饰，那么需要将item偏移一定距离，空缺出底部用来填充底部。因此set方法的最后一个参数设置了值：mDivider.getIntrinsicWidth。</p>
+<h5 id="onDraw"><a href="#onDraw" class="headerlink" title="onDraw"></a>onDraw</h5><p>根据RecyclerView item的绘制层次draw将在Item之前绘制，因此，item可能会遮挡这一层的视图。<br>下面是绘制分割线的实例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) &#123;</span><br><span class="line">    final int left = parent.getLeft();</span><br><span class="line">    final int right = parent.getRight();</span><br><span class="line">    final int childCount = parent.getChildCount();</span><br><span class="line">    Log.i(TAG, &quot;onDraw: &quot;+parent.getChildCount());</span><br><span class="line">    for (int i = 0; i &lt; childCount; i++)&#123;</span><br><span class="line">        final View childView = parent.getChildAt(i);</span><br><span class="line">        parent.getDecoratedBoundsWithMargins(childView,mBounds);</span><br><span class="line">        final int bottom = (int) (mBounds.bottom - childView.getTranslationY());</span><br><span class="line">        final int top = bottom - mHeight;</span><br><span class="line">            c.drawRect(left,top,right,bottom,mPaint);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>onDraw主要有三个参数，Canvas 用来绘制，RecyclerView parent用来获取RecyclerView的实例，RecyclerView.State state获取RecyclerView的状态。<br>获取decoration的left、top、right、bottom比较有趣。下面拿decoration在每个item的上方为例子。</p>
+<ol>
+<li>因为decoration在底部，所以left为parent的左边距，这里根据具体的是否包含padding来确定使用parent.getPddingLeft还是parent.getLeft。</li>
+<li>right的位置需要考虑是否考虑padding的情况若包含padding则需要用宽度减去右padding来获取呀，即right = parent.getWidth()-parent.getPaddingRight();若不需要直接getRight即可。</li>
+<li>不用item的高度显然是不一样的，这里使用了parent.getCount配合parent.getChidldAt(i)；循环取出每个子item。注<strong>意!这里的getCount并不是全部item，recyclerview是个循环复用的组件，所以这里的count为当前屏幕上的全部item数</strong>。通过parent.getChildAdapterPosition(view)来获取item在整个列表中的位置。</li>
+<li>通过parent.getDecoratedBoundsWithMargins(childView,mBounds);获取装饰在item中的位置。其中，mBounds包含着这些信息。</li>
+<li>如果decoration在底部，bottom = mBounds.bottom，top = bottom - Decoration的高度。</li>
+<li>使用Canvas进行绘制</li>
+</ol>
+<h4 id="onDrawOver"><a href="#onDrawOver" class="headerlink" title="onDrawOver"></a>onDrawOver</h4><p>参考onDraw的实现，不过注意onDrawOver 绘制的位置在item的顶部，因此，它可能会遮盖onDraw层和item层。</p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ol>
+<li><a href="http://www.jianshu.com/p/b335b620af39" target="_blank" rel="noopener">【Android】RecyclerView：打造悬浮效果 - 简书</a></li>
+<li><a href="http://www.jianshu.com/p/dda4645c824f" target="_blank" rel="noopener">Android——RecyclerView入门学习之ItemDecoration(一) - 简书</a></li>
+<li><a href="https://blog.piasy.com/2016/03/26/Insight-Android-RecyclerView-ItemDecoration/#fn:space-needed" target="_blank" rel="noopener">深入理解 RecyclerView 系列之一：ItemDecoration - Piasy的博客 | Piasy Blog</a></li>
+<li><a href="http://www.91display.com/api/blog/detail.do?bid=75813576148" target="_blank" rel="noopener">这篇好像很好！教你玩转 Android RecyclerView：深入解析 RecyclerView.ItemDecoration类（含实例讲解） - 91display.com - 91展示网 - 全球最大的IT技术展示网站 - 91display</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/RecyclerView/" rel="tag">#RecyclerView</a>
+          
+            <a href="/tags/UI/" rel="tag">#UI</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/10/J002/" rel="next" title="JAVA踩的坑（一）">
+                <i class="fa fa-chevron-left"></i> JAVA踩的坑（一）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/19/A005/" rel="prev" title="RecyclerView之自定义LayoutManager">
+                RecyclerView之自定义LayoutManager <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#银子"><span class="nav-number">1.</span> <span class="nav-text">银子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重要方法"><span class="nav-number">2.</span> <span class="nav-text">重要方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#getItemOffsets"><span class="nav-number">2.1.</span> <span class="nav-text">getItemOffsets</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#onDraw"><span class="nav-number">2.1.1.</span> <span class="nav-text">onDraw</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onDrawOver"><span class="nav-number">2.2.</span> <span class="nav-text">onDrawOver</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2017/12/13/A004/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+

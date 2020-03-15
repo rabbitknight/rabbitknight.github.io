@@ -1,0 +1,1021 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="IO相关,MIPS异常与中断,APIC,PIC,中断,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="keywords" content="IO相关,MIPS异常与中断,APIC,PIC,中断">
+<meta property="og:type" content="article">
+<meta property="og:title" content="I&#x2F;O设备和中断相关">
+<meta property="og:url" content="https://rabbitknight.net/2016/06/05/article2/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/8.jpg">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/2-1.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/2-2.jpg">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/2-3.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/2-4.jpg">
+<meta property="og:updated_time" content="2020-03-15T09:33:46.813Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="I&#x2F;O设备和中断相关">
+<meta name="twitter:image" content="http://o7iipar59.bkt.clouddn.com/8.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> I/O设备和中断相关 | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                I/O设备和中断相关
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-05T10:49:12+08:00" content="2016-06-05">
+              2016-06-05
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2016/06/05/article2/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2016/06/05/article2/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/06/05/article2/" class="leancloud_visitors" data-flag-title="I/O设备和中断相关">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://o7iipar59.bkt.clouddn.com/8.jpg" alt="I/O设备和中断相关"><br><a id="more"></a></p>
+<h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><h4 id="何为中断"><a href="#何为中断" class="headerlink" title="何为中断"></a>何为中断</h4><p>所谓中断，是指在CPU正常运行的过程中，由在执行的于某个外部或内部事件，导致CPU停止当前正在运行的程序，转去处理该事件，等到时间处理结束之后再返回到被中断的程序中继续运行。<br>中断是提高计算机性能的一种设计，在没有中断的时候，每个设备都需要等待其他设备，造成资源的浪费。</p>
+<h4 id="中断分类"><a href="#中断分类" class="headerlink" title="中断分类"></a>中断分类</h4><p>对于一般的X86与ARM，按照CPU和中断源（能够把提出中断请求的设备和时间成为中断源）可分为内部中断和外部中断。<br>内部中断：也称异常中断，属于非屏蔽中断，是处理器检测到异常情况或执行软件中断指令引起的一种中断。通常有：除法出错中断（INT0）、断点中断（INT3）、溢出中断（INT4）和但不执行中断（INT1）等。异常又分为故障和陷阱。<br>外部中断：也称硬件中断。是由CPU外部引脚出发的一种中断，分为不可屏蔽NMI(INT2)和可屏蔽中断（INTR）<br>对于MIPS结构来说，MIPS将中断归在异常之中。MIPS的异常称为“精确异常”，因为异常是执行指令时同步发生的，因此，在造成异常的指令之前执行的指令，无疑是有效的。然而由于MIPS的高度流水线体系结构，在引起异常的指令时，后面一条指令已经完成了读取和译码的准备工作，只需要ALU空闲处理。当异常发生时，这些预备工作就被废弃。CPU从异常中返回时，就再重新做读取和译码的工作。因此，我们可以保证，在异常发生时，异常指令之后的所有指令都不会被执行。这样就不需要在MIPS的异常处理例程中为延时槽指令而烦恼了。</p>
+<h4 id="龙芯（MIPS）的异常"><a href="#龙芯（MIPS）的异常" class="headerlink" title="龙芯（MIPS）的异常"></a>龙芯（MIPS）的异常</h4><p>找到了一张图用来理解龙芯的异常感觉十分准确，如下图所示。从图中可以看出龙芯的整个异常处理是个树状结构。这张图对应的是2E处理器，对于3B处理器，大概也差不多。</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/2-1.png" alt="图1.1 龙芯异常处理"></p>
+<h3 id="IO和中断"><a href="#IO和中断" class="headerlink" title="IO和中断"></a>IO和中断</h3><h4 id="轮询方式"><a href="#轮询方式" class="headerlink" title="轮询方式"></a>轮询方式</h4><p>轮询方式是早期计算机系统对IO设备的一种管理方式，典型的用途就是在那些任务比较单一的单片机上，在嵌入式系统也有应用。<br>它 定时的 对各种设备轮流询问一遍有无处理要求。轮流询问之后，有要求的，则加以处理。在处理I/O设备的要求之后，处理机返回继续工作。<br>轮询的一种典型的实现可能是这样的：while(TRUE){/<em>…</em>/ select(,,timeout); /<em>…</em>/};当然这里的select()也可以使用poll()替换。</p>
+<h4 id="中断方式"><a href="#中断方式" class="headerlink" title="中断方式"></a>中断方式</h4><p>目前大部分的设备都采用中断的方式与CPU进行交互，中断不需要处理器轮询设备的状态，设备在自己发生状态改变时将主动发送一个信号给处理器（PIC），后者在接收到这一通知信号时，会挂起当前正在执行的任务转而去处理响应外设的中断请求。中断通知机制通过硬件信号异步唤起处理器的注意，解决了外部设备与处理器之间速度不匹配导致的资源浪费问题。<br>处理器在中断到达时会根据不同的中断号找到对应设备（IRR），并对中断请求进行响应处理。中断处理例程ISR（Interrupt Service Routine）由设备驱动程序提供，并在设备驱动模块初始化时注册到系统中断向量表中。从设备发出中断信号，到处理器最终调用ISR进行处理，期间会经过很多步骤，这个过程构成了中断处理框架。<br>在I/O设备中断方式下，中央处理器与I/O设备之间数据的传输步骤如下： </p>
+<ol>
+<li>在某个进程需要数据时，发出指令启动输入输出设备准备数据。</li>
+<li>在进程发出指令启动设备之后，该进程放弃处理器，等待相关I/O操作完成。此时，进程调度程序会调度其他就绪进程使用处理器。 </li>
+<li>当I/O操作完成时，输入输出设备控制器通过中断请求线向处理器发出中断信号，处理器收到中断信号之后，转向预先设计好的中断处理程序，对数据传送工作进行相应的处理。</li>
+<li>得到了数据的进程，转入就绪状态。在随后的某个时刻，进程调度程序会选中该进程继续工作。</li>
+</ol>
+<h4 id="DMA方式"><a href="#DMA方式" class="headerlink" title="DMA方式"></a>DMA方式</h4><p>DMA（Direct Memory Access），直接内存存取技术是指，数据在内存与I/O设备间直接进行成块传输。内存与IO之间传送一个数据块的过程中，不需要CPU的任何中间干涉，只需要CPU在过程开始的时候向设备发出“传送块数据”的命令，然后通过终端来得知是否结束和下次操作是否就绪。<br>DMA工作过程 ：</p>
+<ol>
+<li>当进程要求设备输入数据时，CPU把准备存放输入数据的内存起始地址以及要传送的字节数分别送入DMA控制器中的内存地址寄存器和传送字节计数器。</li>
+<li>发出数据传输要求的进行进入等待状态。此时正在执行的CPU指令被暂时挂起。进程调度程序调度其他进程占据CPU。</li>
+<li>输入设备不断地窃取CPU工作周期，将数据缓冲寄存器中的数据源源不断地写入内存，直到所要求的字节全部传送完毕。</li>
+<li>DMA控制器在传送完所有字节时，通过中断请求线发出中断信号。CPU在接收到中断信号后，转入中断处理程序进行后续处理。</li>
+<li>中断处理结束后，CPU返回到被中断的进程中，或切换到新的进程上下文环境中，继续执行。</li>
+</ol>
+<h3 id="PIC和APIC"><a href="#PIC和APIC" class="headerlink" title="PIC和APIC"></a>PIC和APIC</h3><h4 id="PIC概念"><a href="#PIC概念" class="headerlink" title="PIC概念"></a>PIC概念</h4><p>PIC(Programmable Interrupt Control)可编程中断控制器，通常是指使用两片Intel8259A级联所构成的最多支持15个中断向量的中断控制系统。每个8259A可处理多达 8 个不同的 IRQ。下面是PIC级联图。</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/2-2.jpg" alt="图3.1 二级8259A级联"></p>
+<h4 id="PIC相关"><a href="#PIC相关" class="headerlink" title="PIC相关"></a>PIC相关</h4><p>在MIPS架构中，需要经过下面步骤：</p>
+<ol>
+<li>设置或屏蔽相关寄存器。</li>
+<li>进入异常入口点取指。</li>
+<li>现场保护。</li>
+<li>异常分类（MIPS下中断也是一种异常）处理。</li>
+<li>查找中断向量表路由ISR。</li>
+</ol>
+<p>不同的操作系统对中断处理框架的设计不尽相同，但是要达到的目的是一样的，那就是最终调用用户注册的设备ISR。<br>在数字逻辑电路层面，外部设备和处理器之间有一条专门的中断信号线（Interrupt Line），用于连接外设与CPU的中断引脚（Interrupt Pin）。当外部设备发生状态改变时，可以通过这条信号线向处理器发出一个中断请求（Interrupt Request，IRQ）,其中外部设备通常被称作中断源（Interrupt Source）。<br>处理器一般只有两根左右的中断引脚（例如8259A的INTR和INTA），而管理的外设却很多。为了解决这个问题，现代设备的中断信号线并不是与处理器直接相连，而是与一个称为中断控制器的设备相连接，后者才跟处理器的中断引脚连接。中断控制器一般可以通过处理器进行编程配置，所以常称为可编程中断控制器PIC（Programmable Interrupt Controller）。下图是一个典型的中断硬件连接的系统框架图：<br> <img src="http://o7iipar59.bkt.clouddn.com/source/2-3.png" alt="中断硬件连接系统架构图"></p>
+<h4 id="中断连接框图"><a href="#中断连接框图" class="headerlink" title="中断连接框图"></a>中断连接框图</h4><p>PIC的输出中断信号线连接到处理器的INT引脚上，这是处理器专门用来接收中断信号的pin脚。外部设备的中断线连接到PIC的pin引脚上，这是PIC用来接收外设中断的pin脚。比如第一个设备的中断线通过P0连到PIC上。在实际的硬件平台上，PIC有的在CPU外部，比如x86平台的8259中断控制器；有的被封装到CPU的内部，这广泛见于嵌入式领域。一颗SoC芯片内部集成了处理器和各种外部设备的控制器，其中包括PIC。<br>IRQ相关信息管理的关键点是一个全局数组，每个数组项对应一个IRQ编号，软件中断号irq就是这个数组的索引，irq将一对一或多对一（共享）映射到硬件中断源编号。</p>
+<h4 id="APIC"><a href="#APIC" class="headerlink" title="APIC"></a>APIC</h4><p>APIC（Advanced Programmable Interrupt Control）高级可编程中断控制器。有两部分组成：<br>IO APIC：位于南桥中，用于处理桥上的设备所产生的各种中断。它用来接收IO设备所产生的中断，并将其传送给Local APIC。通常有24个输入。<br>Local APIC：位于CPU中，每个CPU都有一个。负责传送中断至指定的处理器。接收来自于CPU interrupt pin,内部中断源、外部IO APIC所产生的中断，并将它们发送到Processor core去处理。在多处理器系统（MP）中，发送和接受system bus上来自其他处理器的IPI message(Inter-Processor Interrupt)。每个Local APIC由一组APIC寄存器和将中断发送到处理器核心以及生成IPI消息的硬件组成。APIC寄存器是内存映射的，可以使用MOV指令读写。</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/2-4.jpg" alt="图3.3 APIC示意图"></p>
+<h3 id="相关内容参考"><a href="#相关内容参考" class="headerlink" title="相关内容参考"></a>相关内容参考</h3><blockquote>
+<p><a href="http://341719xubin.blog.163.com/blog/static/1329207932011925115012605/" target="_blank" rel="noopener">中断原理 - porpoise的日志 - 网易博客</a><br><a href="http://blog.csdn.net/cc_net/article/details/10439665" target="_blank" rel="noopener">计算机原理学习（2）– 存储器和I/O设备和总线 - 念念红尘的技术专栏 - 博客频道 - CSDN.NET</a><br><a href="http://blog.csdn.net/phunxm/article/details/8952963" target="_blank" rel="noopener">中断处理 - 曾梦想仗剑走天涯 - 博客频道 - CSDN.NET</a><br><a href="http://blog.sina.com.cn/s/blog_952b093d0101aj4f.html" target="_blank" rel="noopener">【转】Interrupt - PIC - APIC_pizch_新浪博客</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IO相关/" rel="tag">#IO相关</a>
+          
+            <a href="/tags/MIPS异常与中断/" rel="tag">#MIPS异常与中断</a>
+          
+            <a href="/tags/APIC/" rel="tag">#APIC</a>
+          
+            <a href="/tags/PIC/" rel="tag">#PIC</a>
+          
+            <a href="/tags/中断/" rel="tag">#中断</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/20/First/" rel="next" title="写于：梦开始的地方">
+                <i class="fa fa-chevron-left"></i> 写于：梦开始的地方
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/12/third/" rel="prev" title="龙芯中断">
+                龙芯中断 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#中断"><span class="nav-number">1.</span> <span class="nav-text">中断</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#何为中断"><span class="nav-number">1.1.</span> <span class="nav-text">何为中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#中断分类"><span class="nav-number">1.2.</span> <span class="nav-text">中断分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#龙芯（MIPS）的异常"><span class="nav-number">1.3.</span> <span class="nav-text">龙芯（MIPS）的异常</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IO和中断"><span class="nav-number">2.</span> <span class="nav-text">IO和中断</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#轮询方式"><span class="nav-number">2.1.</span> <span class="nav-text">轮询方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#中断方式"><span class="nav-number">2.2.</span> <span class="nav-text">中断方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DMA方式"><span class="nav-number">2.3.</span> <span class="nav-text">DMA方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIC和APIC"><span class="nav-number">3.</span> <span class="nav-text">PIC和APIC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PIC概念"><span class="nav-number">3.1.</span> <span class="nav-text">PIC概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PIC相关"><span class="nav-number">3.2.</span> <span class="nav-text">PIC相关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#中断连接框图"><span class="nav-number">3.3.</span> <span class="nav-text">中断连接框图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#APIC"><span class="nav-number">3.4.</span> <span class="nav-text">APIC</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关内容参考"><span class="nav-number">4.</span> <span class="nav-text">相关内容参考</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2016/06/05/article2/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+

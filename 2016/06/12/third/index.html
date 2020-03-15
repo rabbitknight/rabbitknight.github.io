@@ -1,0 +1,997 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="IO相关,MIPS异常与中断,APIC,PIC,中断,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="keywords" content="IO相关,MIPS异常与中断,APIC,PIC,中断">
+<meta property="og:type" content="article">
+<meta property="og:title" content="龙芯中断">
+<meta property="og:url" content="https://rabbitknight.net/2016/06/12/third/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/10.jpg">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/3-1.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/3-2.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/3-3.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/3-4.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com/source/3-5.png">
+<meta property="og:updated_time" content="2020-03-15T09:33:46.814Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="龙芯中断">
+<meta name="twitter:image" content="http://o7iipar59.bkt.clouddn.com/10.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> 龙芯中断 | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                龙芯中断
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-12T13:25:26+08:00" content="2016-06-12">
+              2016-06-12
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2016/06/12/third/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2016/06/12/third/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/06/12/third/" class="leancloud_visitors" data-flag-title="龙芯中断">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://o7iipar59.bkt.clouddn.com/10.jpg" alt="龙芯中断"><br><a id="more"></a></p>
+<h3 id="中断架构"><a href="#中断架构" class="headerlink" title="中断架构"></a>中断架构</h3><h4 id="CPU核感知中断"><a href="#CPU核感知中断" class="headerlink" title="CPU核感知中断"></a>CPU核感知中断</h4><p>CPU核能接收到的中断必须在Cause寄存器中能够显示出来。所以要让CPU接收到中断。一定要直接连到IP0-IP7这八个位的输入口。Cause寄存器定义如下：</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/3-1.png" alt="图 1.1Cause寄存器定义"><br>IP0~IP7 用于标识发生了哪些中断。IP0 和IP1 是软件中断位，不提供对外的中断引脚。IP2~IP5随着硬件输入引脚上的信号而变化，标识哪些设备发生了中断。IP6 用于处理器核间中断，负责多核处理器的通信。IP7 一方面用于MIPS 内部的定时器中断，另一方面用于性能计数器中断    这些中断也可以通过设置SR寄存器的IM0~IM7位进行屏蔽，SR寄存器的定义如下：</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/3-2.png" alt="图1.2 SR寄存器的定义"></p>
+<h4 id="外部中断路由"><a href="#外部中断路由" class="headerlink" title="外部中断路由"></a>外部中断路由</h4><p>对于具体的CPU核来说，中断可以分为两类：外部的中断和内部的中断。内部中断就是在IP2-IP5之外的引脚输入的中断，包括IPI，软件中断，时钟中断。外部中断主要是指右外设引发的中断。<br>下面是中断路由模块的示意图：</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/3-3.png" alt="图1.3 中断路由模块"><br>可以看到这个配合模块的输入是32个中断源，配置的就是这些中断路由到哪个CPU核的哪个IP位。但是这里核旁边的IP0~IP3实际对应了CAUSE寄存器的IP2~IP5。南北桥所有的中断都是通过HT打头的中断引脚传入。</p>
+<h4 id="HT外部设备中断"><a href="#HT外部设备中断" class="headerlink" title="HT外部设备中断"></a>HT外部设备中断</h4><p>现在的3A产品中，已经遇到的设备除了串口，都是从HT转过来的。流程如下：首先南桥的中断控制器在接收到中断申请后，会发出中断请求，经过PCIE的root complex转化后发送到HT总线，然后被HT总线得知，HT控制器自动询问中断控制器是IRQ几，然后设置自己的中断状态寄存器。之后按照配置发出HT-1 INT0之类的中断，然后这个引脚连接到COU的中断路由控制模块，路由到某个CPU核。</p>
+<h3 id="中断控制器"><a href="#中断控制器" class="headerlink" title="中断控制器"></a>中断控制器</h3><p>3A的中断控制器位于南桥上，可以设置成APIC或者是8259A模式，但是CPU不支持的原因只能使用8269模式。PCIE设备的中断有两种方式，INTx emulation和MSI。MSI也是需要CPU支持的所以3A只能使用INTx emulation方式。<br>因为PCIE没有中断引脚，中断不能通过一个线上的直接电平变化表示，所以虚拟INTx中断也是通过包的方式发出的。中断包的路由目标就是南桥上的中断控制器，中断首先会到达root complex，然后路由到中断控制器。下面是一个南北桥设备的中断通路示意图：</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/3-4.png" alt="图2.1南北桥设备的中断通路示意图"><br>南桥的中断控制器共有10个输入：INTA#~INTH#（8个），SCI，SMBus interrupt。中断控制器在接收到中断包就会知道虚拟中断号（INTx），具体的向上层发送的中断号是可以配置的。IRQ号从0~15。具体如下图所示：</p>
+<p><img src="http://o7iipar59.bkt.clouddn.com/source/3-5.png" alt="图2.2 中断控制器的路由配置"><br>这个路由的配置是听过IO的0XC00，0XC01这两个端口。具体的就是要往0XC00写值来表示配置哪个中断输入，二胺后写0XC01表示这个输入要发往哪个IRQ号。例如：<br>    将INTC#上传的中断设置为IRQ6操作如下：<br>        ①：2 → 0XC00<br>        ②：6 → 0XC01</p>
+<h3 id="HT控制器的接收和上传中断"><a href="#HT控制器的接收和上传中断" class="headerlink" title="HT控制器的接收和上传中断"></a>HT控制器的接收和上传中断</h3><p>现在所有外设的触发中断都被8259管理，无论是通过INTx emulation还是SCI。8259能上抛的中断就是IRQ0~IRQ15，中断要传给CPU，必须通过HT总线，而HT总线的一端在龙芯CPU的HT控制器上，另一端在北桥的HT接口上。北桥的HT接口一般称为HTIU，一般通过PCIE的bus0 device0fun0寄存器进行操作的。所以中断应该是通过北桥的root complex 转化8259上抛的中断实现的，通过HT接口上抛的是HT格式的中断包。</p>
+<p>3A有两个HT控制器，接收root complex转换的8259中断申请的是和北桥相连的HT控制器，这里应该是HT1，HT0用于核间中断。</p>
+<p>每个HT控制器可以接收256个中断。就HT IRQ0 ~ HT IRQ255.这里256个中断分为8组，每组32个，第一组为HT IRQ0 ~ HT IRQ31。每组中断在物理上都是通过一个引脚出去连接到3ACPU的中断路由模块。对于HT1控制器，这八个中断引脚在手册中名为HT1 int0 ~HT1 int7。其实，8259的IRQ0~IRQ15就是HT控制器的HT IRQ0~HT IRQ15。<br>8259即PIC，8259 上来的中断都被分在HT 中断的第一组，送到CPU。内部的都是HT1 INT0 这个引脚。所以在中断控制器是8259 而不是APIC 的情况下，HT 外设备上来的中断无论如何配置，必然路由到同一个核中。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IO相关/" rel="tag">#IO相关</a>
+          
+            <a href="/tags/MIPS异常与中断/" rel="tag">#MIPS异常与中断</a>
+          
+            <a href="/tags/APIC/" rel="tag">#APIC</a>
+          
+            <a href="/tags/PIC/" rel="tag">#PIC</a>
+          
+            <a href="/tags/中断/" rel="tag">#中断</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/05/article2/" rel="next" title="I/O设备和中断相关">
+                <i class="fa fa-chevron-left"></i> I/O设备和中断相关
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/23/my-poor-C/" rel="prev" title="一个哈希加密算法">
+                一个哈希加密算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#中断架构"><span class="nav-number">1.</span> <span class="nav-text">中断架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU核感知中断"><span class="nav-number">1.1.</span> <span class="nav-text">CPU核感知中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外部中断路由"><span class="nav-number">1.2.</span> <span class="nav-text">外部中断路由</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HT外部设备中断"><span class="nav-number">1.3.</span> <span class="nav-text">HT外部设备中断</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断控制器"><span class="nav-number">2.</span> <span class="nav-text">中断控制器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HT控制器的接收和上传中断"><span class="nav-number">3.</span> <span class="nav-text">HT控制器的接收和上传中断</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2016/06/12/third/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+

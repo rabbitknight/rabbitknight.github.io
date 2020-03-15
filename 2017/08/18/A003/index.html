@@ -1,0 +1,1035 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,RxJAVA,Retrofit,网络,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="引子刚刚接触Retorfit和RxJava，emmm看了一些资料，同时也写了点代码。尝试总结一下，结合网上的例子，使用和风天气的api进行简单的封装，用到之前的天气预报学习的app中。">
+<meta name="keywords" content="Android,RxJAVA,Retrofit,网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Retrofit+Rxjava封装（一）">
+<meta property="og:url" content="https://rabbitknight.net/2017/08/18/A003/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:description" content="引子刚刚接触Retorfit和RxJava，emmm看了一些资料，同时也写了点代码。尝试总结一下，结合网上的例子，使用和风天气的api进行简单的封装，用到之前的天气预报学习的app中。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-15T09:33:46.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Retrofit+Rxjava封装（一）">
+<meta name="twitter:description" content="引子刚刚接触Retorfit和RxJava，emmm看了一些资料，同时也写了点代码。尝试总结一下，结合网上的例子，使用和风天气的api进行简单的封装，用到之前的天气预报学习的app中。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> Retrofit+Rxjava封装（一） | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Retrofit+Rxjava封装（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-18T10:00:00+08:00" content="2017-08-18">
+              2017-08-18
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2017/08/18/A003/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2017/08/18/A003/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/18/A003/" class="leancloud_visitors" data-flag-title="Retrofit+Rxjava封装（一）">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a><center>引子<center></center></center></h2><p>刚刚接触Retorfit和RxJava，emmm看了一些资料，同时也写了点代码。尝试总结一下，结合网上的例子，使用和风天气的api进行简单的封装，用到之前的天气预报学习的app中。</p>
+<a id="more"></a>
+<h2 id="Retorfit简介"><a href="#Retorfit简介" class="headerlink" title="Retorfit简介"></a><center>Retorfit简介<center></center></center></h2><p>Retorfit是 square的一个网络访问框架，面向JAVA和Android开发。使用技术动态代理和反射机制。<br>结合RxJava使用，对于我这种小白来说居然也挺爽，至少代码看起来很清楚。<br>目前很多MVP的Android代码看起来似乎都在使用Retorfit。可能也是和OkHttp是相同公司出品的+RxjAVA挺火的原因吧。</p>
+<h2 id="简单封装"><a href="#简单封装" class="headerlink" title="简单封装"></a><center>简单封装<center></center></center></h2><h3 id="网络权限"><a href="#网络权限" class="headerlink" title="网络权限"></a>网络权限</h3><p>在manifests中添加网络权限</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;
+</code></pre><h3 id="gradle依赖"><a href="#gradle依赖" class="headerlink" title="gradle依赖"></a>gradle依赖</h3><p>下面是用到的全部依赖了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">compile &apos;com.squareup.okhttp3:okhttp:3.4.1&apos;</span><br><span class="line">compile &apos;com.squareup.retrofit2:retrofit:2.0.0&apos;</span><br><span class="line">compile &apos;com.squareup.retrofit2:converter-gson:2.0.0&apos;</span><br><span class="line">compile &apos;com.squareup.retrofit2:adapter-rxjava:2.0.0&apos;</span><br><span class="line">compile &apos;com.jakewharton:butterknife:7.0.1&apos;</span><br><span class="line">compile &apos;io.reactivex:rxjava:1.1.0&apos;</span><br><span class="line">compile &apos;io.reactivex:rxandroid:1.1.0&apos;</span><br><span class="line">compile &apos;com.jakewharton.rxbinding:rxbinding:0.4.0&apos;</span><br></pre></td></tr></table></figure></p>
+<p>上面就是Retorfit和RxAndroid和Okhttp需要的依赖。</p>
+<h3 id="创建api接口"><a href="#创建api接口" class="headerlink" title="创建api接口"></a>创建api接口</h3><p>我们使用的api为和风天气的接口，具体地址是</p>
+<pre><code>https://free-api.heweather.com/v5/weather?city=苏州&amp;key=xxxxxxxxxxxxxxx
+</code></pre><p>  可拆分为：</p>
+<pre><code>基地址（BASE_URL）    ：https://free-api.heweather.com/v5/
+偏移地址                        ：weather    
+请求参数（&lt;key,value&gt;）:city=苏州,key=xxxx
+</code></pre><p>新建一名称为WeatherService的interface类型的接口，创建getWeather方法</p>
+<pre><code>@GET(&quot;weather&quot;)
+Observable&lt;HeHttpResult&gt; getWeather(@Query(&quot;city&quot;) String city,
+                                    @Query(&quot;key&quot;)String key);
+</code></pre><p>解释：</p>
+<ol>
+<li>接口使用了JAVA的注解机制，@GET的注解，代表了这条http请求使用了GET方法。</li>
+<li>括弧中的（“weather”）为偏移地址，就是具体访问的功能地址</li>
+<li>Observable<hehttpresult>，这里使用了RxJava所以使用Observable作为返回值类型，当然Retrofit也支持回调方式。尖括号中的“HeHttpResult”是接收到的Response的body数据的类型。</hehttpresult></li>
+<li>@Query(“city”) String city，@Query是用到的参数，第一个city为键值对的key，第二个city为具体的值。</li>
+<li>Retrofit支持@GET、@POST、@HEAD、@PUT、@DELETA、@PATCH，和参数相关的@Path、@Field、@Multipart，表示网络请求使用的请求方式具体的可以参考<a href="http://square.github.io/retrofit/2.x/retrofit/" target="_blank" rel="noopener">官方的文档</a></li>
+</ol>
+<h3 id="创建HttpMethods"><a href="#创建HttpMethods" class="headerlink" title="创建HttpMethods"></a>创建HttpMethods</h3><p> HttpMethods使用单例模式访问，用来负责创建Retorfit，进行相关配置。</p>
+<ul>
+<li>1.底层网络使用OkHttp所以要先创建OkHttpClient。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//设置OkHttpClient</span><br><span class="line">okHttpClient = new OkHttpClient.Builder().connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).build();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>2.创建Retorfit</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//创建retorfit</span><br><span class="line">retrofit = new Retrofit.Builder()</span><br><span class="line">//设置okhttpclient</span><br><span class="line">	.client(okHttpClient)      </span><br><span class="line">//集成Gson转换器                                    </span><br><span class="line">	.addConverterFactory(GsonConverterFactory.create())   </span><br><span class="line">//集成RxJava处理     </span><br><span class="line">    .addCallAdapterFactory(RxJavaCallAdapterFactory.create()) </span><br><span class="line">//设置基地址  </span><br><span class="line">    .baseUrl(WeatherService.Base_Url)                          </span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>3.然后通过Retrofit实例化WeatherService API</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//实例化api</span><br><span class="line">weatherService = retrofit.create(WeatherService.class);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>4.设置获取天气的方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * 向外暴露的获取天气的方法</span><br><span class="line">  * @param subscriber    订阅者,事件处理</span><br><span class="line">  * @param city          天气</span><br><span class="line">  */</span><br><span class="line">public void getWeather(Subscriber&lt;HeHttpResult&gt; subscriber,String city)&#123;</span><br><span class="line">	String key = &quot;6c420683fae3483c80e4a3e0099fceb7&quot;;</span><br><span class="line">	weatherService.getWeather(city,key)</span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                .unsubscribeOn(Schedulers.io())</span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(subscriber);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是整个类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">public class HttpMethods &#123;</span><br><span class="line">    //超时</span><br><span class="line">    private static final int DEFAULT_TIMEOUT = 5;</span><br><span class="line"></span><br><span class="line">    private Retrofit retrofit = null;</span><br><span class="line">    private OkHttpClient okHttpClient = null;</span><br><span class="line">    private WeatherService weatherService = null;</span><br><span class="line"></span><br><span class="line">    private HttpMethods()&#123;</span><br><span class="line">	//设置OkHttpClient</span><br><span class="line">	okHttpClient = new OkHttpClient.Builder().connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS).build();</span><br><span class="line">	//创建retorfit</span><br><span class="line">	retrofit = new Retrofit.Builder()</span><br><span class="line">                .client(okHttpClient)                                       //设置okhttpclient</span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())         //设置转换为Gson</span><br><span class="line">                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())   //转换为RxJava</span><br><span class="line">                .baseUrl(WeatherService.Base_Url)                           //设置基地址</span><br><span class="line">                .build();</span><br><span class="line">        //实例化api</span><br><span class="line">        weatherService = retrofit.create(WeatherService.class);</span><br><span class="line">    &#125;</span><br><span class="line">    //单例模式访问</span><br><span class="line">    private static class SingletonHolders&#123;</span><br><span class="line">        private static final HttpMethods INSTANCE = new HttpMethods();</span><br><span class="line">    &#125;</span><br><span class="line">    public HttpMethods getInstance()&#123;</span><br><span class="line">        return SingletonHolders.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 向外暴露的获取天气的方法</span><br><span class="line">     * @param subscriber    订阅者</span><br><span class="line">     * @param city          天气</span><br><span class="line">     */</span><br><span class="line">    public void getWeather(Subscriber&lt;HeHttpResult&gt; subscriber,String city)&#123;</span><br><span class="line">        String key = &quot;6c420683fae3483c80e4a3e0099fceb7&quot;;</span><br><span class="line">        weatherService.getWeather(city,key)</span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                .unsubscribeOn(Schedulers.io())</span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(subscriber);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="封装代码的使用"><a href="#封装代码的使用" class="headerlink" title="封装代码的使用"></a>封装代码的使用</h3><p>创建获取天气的方法，编辑事件处理，调用HttpMethods中的方法请求天气。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> 5.  6. @param weatherId</span><br><span class="line">   */</span><br><span class="line">public void requestWeather(final String weatherId)&#123;</span><br><span class="line">	//创建Subscriber，订阅者</span><br><span class="line">	Subscriber subscriber = new Subscriber&lt;HeHttpResult&gt;() &#123;</span><br><span class="line">		@Override</span><br><span class="line">	    public void onCompleted() &#123;</span><br><span class="line">        Toast.makeText(WeatherActivity.this, &quot;onCompleted&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        @Override</span><br><span class="line">        public void onError(Throwable throwable) &#123;</span><br><span class="line">             throwable.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">         @Override</span><br><span class="line">         public void onNext(HeHttpResult heHttpResult) &#123;</span><br><span class="line">	         //结果显示</span><br><span class="line">             Toast.makeText(WeatherActivity.this, </span><br><span class="line">             &quot;现在的温度是：&quot;+ httpResult.getHeWeather5().get(0).getNow().getTmp(),</span><br><span class="line">              Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">	//调用获取天气方法       </span><br><span class="line">	HttpMethods.getInstance().getWeather(subscriber,weatherId);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><center>总结<center></center></center></h2><p>以上为对Retorfit的简单封装，但是还是很多缺点：</p>
+<ol start="6">
+<li>没有添加cookie </li>
+<li>没有添加拦截器</li>
+<li>使用方法没有良好封装</li>
+<li>…</li>
+</ol>
+<p>革命之路还很远啊!!</p>
+<h2 id="参考-amp-博文推荐"><a href="#参考-amp-博文推荐" class="headerlink" title="参考&amp;博文推荐"></a>参考&amp;博文推荐</h2><ol>
+<li><a href="http://www.huchiwei.com/2016/09/21/%E7%9C%8B%E6%88%91%E5%BC%80%E5%8F%91%E5%B9%B2%E8%B4%A7%E9%9B%86%E4%B8%AD%E8%90%A5App%EF%BC%88%E4%B8%89%EF%BC%89-Retroft2+RxJava%E5%B0%81%E8%A3%85%E4%BD%BF%E7%94%A8/" target="_blank" rel="noopener">看我开发干货集中营App（三）~Retroft2+RxJava封装使用 |<br>づHuy博客</a></li>
+<li><a href="http://www.jianshu.com/p/29c2a9ac5abf" target="_blank" rel="noopener">Android基于Retrofit2.0+RxJava 封装的超好用的RetrofitClie… -<br>简书</a></li>
+<li><a href="http://chuansong.me/n/463517051526" target="_blank" rel="noopener">Retrofit项目封装使用_郭霖_传送门</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/RxJAVA/" rel="tag">#RxJAVA</a>
+          
+            <a href="/tags/Retrofit/" rel="tag">#Retrofit</a>
+          
+            <a href="/tags/网络/" rel="tag">#网络</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/10/J001/" rel="next" title="【转】Android学习资源网站大全">
+                <i class="fa fa-chevron-left"></i> 【转】Android学习资源网站大全
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/10/J002/" rel="prev" title="JAVA踩的坑（一）">
+                JAVA踩的坑（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引子"><span class="nav-number">1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Retorfit简介"><span class="nav-number">2.</span> <span class="nav-text">Retorfit简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单封装"><span class="nav-number">3.</span> <span class="nav-text">简单封装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络权限"><span class="nav-number">3.1.</span> <span class="nav-text">网络权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradle依赖"><span class="nav-number">3.2.</span> <span class="nav-text">gradle依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建api接口"><span class="nav-number">3.3.</span> <span class="nav-text">创建api接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建HttpMethods"><span class="nav-number">3.4.</span> <span class="nav-text">创建HttpMethods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#封装代码的使用"><span class="nav-number">3.5.</span> <span class="nav-text">封装代码的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考-amp-博文推荐"><span class="nav-number">5.</span> <span class="nav-text">参考&amp;博文推荐</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2017/08/18/A003/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+

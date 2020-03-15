@@ -1,0 +1,1035 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,JAVA,JSON,GSON,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="何为JSONJSON为JavaScript Object Notation的简称，是一种用于轻量级的数据交换语言，是用了存储和交换文本信息的语法。尽管JSON是JavaScript的一个子集，但JSON是独立于语言的文本格式，目前很多主流的编程语言都支持JSON。说到JSON就不得不提到xml，与XML想比，JSON占用更小、速度更快，更易解析。JSON不可用于配置文件，仅仅作为传输信息来使用。">
+<meta name="keywords" content="Android,JAVA,JSON,GSON">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSON解析以及GSON简明使用">
+<meta property="og:url" content="https://rabbitknight.net/2017/03/28/A002/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:description" content="何为JSONJSON为JavaScript Object Notation的简称，是一种用于轻量级的数据交换语言，是用了存储和交换文本信息的语法。尽管JSON是JavaScript的一个子集，但JSON是独立于语言的文本格式，目前很多主流的编程语言都支持JSON。说到JSON就不得不提到xml，与XML想比，JSON占用更小、速度更快，更易解析。JSON不可用于配置文件，仅仅作为传输信息来使用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com//source/A002-8.jpg">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com//source/A002-3.jpg">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com//source/A002-4.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com//source/A002-5.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com//source/A002-6.png">
+<meta property="og:image" content="http://o7iipar59.bkt.clouddn.com//source/A002-7.jpg">
+<meta property="og:updated_time" content="2020-03-15T09:33:46.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JSON解析以及GSON简明使用">
+<meta name="twitter:description" content="何为JSONJSON为JavaScript Object Notation的简称，是一种用于轻量级的数据交换语言，是用了存储和交换文本信息的语法。尽管JSON是JavaScript的一个子集，但JSON是独立于语言的文本格式，目前很多主流的编程语言都支持JSON。说到JSON就不得不提到xml，与XML想比，JSON占用更小、速度更快，更易解析。JSON不可用于配置文件，仅仅作为传输信息来使用。">
+<meta name="twitter:image" content="http://o7iipar59.bkt.clouddn.com//source/A002-8.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> JSON解析以及GSON简明使用 | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                JSON解析以及GSON简明使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-28T15:34:24+08:00" content="2017-03-28">
+              2017-03-28
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2017/03/28/A002/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2017/03/28/A002/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/28/A002/" class="leancloud_visitors" data-flag-title="JSON解析以及GSON简明使用">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://o7iipar59.bkt.clouddn.com//source/A002-8.jpg" alt="json头图"></p>
+<h2 id="何为JSON"><a href="#何为JSON" class="headerlink" title="何为JSON"></a><center>何为JSON</center></h2><p><a href="https://zh.wikipedia.org/wiki/JSON" target="_blank" rel="noopener">JSON</a>为JavaScript Object Notation的简称，是一种用于轻量级的数据交换语言，是用了存储和交换文本信息的语法。尽管JSON是JavaScript的一个子集，但JSON是独立于语言的文本格式，目前很多主流的编程语言都支持JSON。<br>说到JSON就不得不提到xml，与XML想比，JSON占用更小、速度更快，更易解析。JSON不可用于配置文件，仅仅作为传输信息来使用。<br><a id="more"></a></p>
+<h2 id="JSON基本语法规则"><a href="#JSON基本语法规则" class="headerlink" title="JSON基本语法规则"></a><center>JSON基本语法规则</center></h2><p>下面是几个JSON中的基本也是最重要的概念<del>，JSON也就这几个概念</del>。</p>
+<h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3><p>一个对象一个对象以<strong>{开始，并以}</strong>结束。</p>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>JSON另外一个常用的概念是数组，在键值对中的值或者对象中有时候并不可能是一个简单的值，有时候则可能是数组。数组或有序列表，使用<strong>[，]</strong>来表示。</p>
+<h3 id="键值对"><a href="#键值对" class="headerlink" title="键值对"></a>键值对</h3><p>在对象中通常包含不止一个<strong>“键-值”对</strong>。键值对以<strong>{“名称”:”值”}</strong>的形式书写，如果是多对键值对则用<strong>，</strong>分隔。键值对的一个名称是一个字符串； 一个值可以是一个字符串，一个数值，一个对象，一个布尔值，一个有序列表，或者一个null值。</p>
+<hr>
+<h2 id="JSON基本解析实例"><a href="#JSON基本解析实例" class="headerlink" title="JSON基本解析实例"></a><center>JSON基本解析实例</center></h2><h3 id="一个简单的小例子"><a href="#一个简单的小例子" class="headerlink" title="一个简单的小例子"></a>一个简单的小例子</h3><p>这里是我从wiki中直接拿过来的一个例子，我觉得非常的好，就拿来直接用。这是一个名为 Jhon Smith的“电话簿”。我们一行行来看。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;	//①最外层是一个JSON对象，&#123;&#125;中间的为这个对象的内容。</span><br><span class="line">	 &quot;firstName&quot;: &quot;John&quot;,  //②一个键值对，名称为firstName,值为John，用逗号隔开键值对</span><br><span class="line">     &quot;lastName&quot;: &quot;Smith&quot;,  //同②，略</span><br><span class="line">     &quot;sex&quot;: &quot;male&quot;,        //同②，略</span><br><span class="line">     &quot;age&quot;: 25,            //同②，略</span><br><span class="line">     &quot;address&quot;:  //③一个键值对，名称为address，值为一JSON对象</span><br><span class="line">     &#123;</span><br><span class="line">         &quot;streetAddress&quot;: &quot;21 2nd Street&quot;,  //同②，略</span><br><span class="line">         &quot;city&quot;: &quot;New York&quot;,                //同②，略</span><br><span class="line">         &quot;state&quot;: &quot;NY&quot;,                     //同②，略</span><br><span class="line">         &quot;postalCode&quot;: &quot;10021&quot;              //同②，略</span><br><span class="line">     &#125;,</span><br><span class="line">     &quot;phoneNumber&quot;://④一个键值对，名称为phoneNumber，但是值是JSON数组。</span><br><span class="line">     [  //⑤这里是数组的开始，数组的大小为2，内容为2个对象，数组元素之间使用，隔开。</span><br><span class="line">         &#123;  //⑥数组中第一个元素，为一JSON对象</span><br><span class="line">           &quot;type&quot;: &quot;home&quot;,</span><br><span class="line">           &quot;number&quot;: &quot;212 555-1234&quot;</span><br><span class="line">         &#125;,</span><br><span class="line">         &#123;</span><br><span class="line">           &quot;type&quot;: &quot;fax&quot;,</span><br><span class="line">           &quot;number&quot;: &quot;646 555-4567&quot;</span><br><span class="line">         &#125;</span><br><span class="line">     ]</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>既然文章叫做JSON解析，上面都是论述，总得有个具体的解析吧，那么下面我使用JAVA来常识解析上面的小例子。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//JAVA中json包的引用我就不说了。</span></span><br><span class="line">String json=response.body().string;  <span class="comment">//假设从服务拿出来的json字符串，就是上面的内容</span></span><br><span class="line">JSONObject personObj = <span class="keyword">new</span> JSONObject(json); <span class="comment">//①创建一个名为person的JSONObject类型。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//②下面分别取出 最外层JSONObject包裹的firstName、lastName等字符串</span></span><br><span class="line">System.out.println(personObj.getString(<span class="string">"firstName"</span>));</span><br><span class="line">System.out.println(personObj.getString(<span class="string">"lastName"</span>));</span><br><span class="line">System.out.println(personObj.getString(<span class="string">"sex"</span>));</span><br><span class="line">System.out.println(personObj.getInt(<span class="string">"age"</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//③下面是取出 最外层JSONObject包裹的名称为address的JSONObject</span></span><br><span class="line">JSONObject addressObj = personObj.getJSONObject(<span class="string">"address"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//④下面是取出 addressObject中的streetAddress等对应的字符串</span></span><br><span class="line">System.out.println(addressObj.getString(<span class="string">"streetAddress"</span>);</span><br><span class="line">System.out.println(addressObj.getString(<span class="string">"city"</span>);</span><br><span class="line">System.out.println(addressObj.getString(<span class="string">"state"</span>);</span><br><span class="line">System.out.println(addressObj.getString(<span class="string">"postalCode"</span>);</span><br><span class="line"><span class="comment">//⑤下面是取出 最外层JSONObject包裹的名称为phoneNumber的JSONArray</span></span><br><span class="line">JSONArray phoneNumberArray = personObj.getJSONArry(<span class="string">"phoneNumber"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//⑥下面是利用循环 读取phoneNumberArray 中的信息</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; phoneNumberArray.lenth(); i++)&#123;</span><br><span class="line">	JSONObject tempObj = phoneNumberArray.getJSONObject(i);</span><br><span class="line">	System.ouy.println(tempObj.getString(<span class="string">"type"</span>));</span><br><span class="line">	System.ouy.println(tempObj.getString(<span class="string">"number"</span>));</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a><center>实例</center></h2><h3 id="和风天气api返回json结果"><a href="#和风天气api返回json结果" class="headerlink" title="和风天气api返回json结果"></a>和风天气api返回json结果</h3><p>这里的实例引用了和风天气api的例子，和风天气的是我做课程作业需要使用到的，也是我接触的第一个实际开发过程中使用的例子。<br>这是我直接从服务器拿回来的json的数据，我第一次看，感觉十分的复杂 - -。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;HeWeather5&quot;:[&#123;&quot;aqi&quot;:&#123;&quot;city&quot;:&#123;&quot;aqi&quot;:&quot;66&quot;,&quot;pm10&quot;:&quot;82&quot;,&quot;pm25&quot;:&quot;38&quot;,&quot;qlty&quot;:&quot;良&quot;&#125;&#125;,&quot;basic&quot;:&#123;&quot;city&quot;:&quot;常熟&quot;,&quot;cnty&quot;:&quot;中国&quot;,&quot;id&quot;:&quot;CN101190402&quot;,&quot;lat&quot;:&quot;31.658156&quot;,&quot;lon&quot;:&quot;120.74852&quot;,&quot;update&quot;:&#123;&quot;loc&quot;:&quot;2017-04-04 16:51&quot;,&quot;utc&quot;:&quot;2017-04-04 08:51&quot;&#125;&#125;,&quot;daily_forecast&quot;:[&#123;&quot;astro&quot;:&#123;&quot;mr&quot;:&quot;11:41&quot;,&quot;ms&quot;:&quot;00:51&quot;,&quot;sr&quot;:&quot;05:42&quot;,&quot;ss&quot;:&quot;18:19&quot;&#125;,&quot;cond&quot;:&#123;&quot;code_d&quot;:&quot;104&quot;,&quot;code_n&quot;:&quot;305&quot;,&quot;txt_d&quot;:&quot;阴&quot;,&quot;txt_n&quot;:&quot;小雨&quot;&#125;,&quot;date&quot;:&quot;2017-04-04&quot;,&quot;hum&quot;:&quot;61&quot;,&quot;pcpn&quot;:&quot;0.0&quot;,&quot;pop&quot;:&quot;0&quot;,&quot;pres&quot;:&quot;1020&quot;,&quot;tmp&quot;:&#123;&quot;max&quot;:&quot;20&quot;,&quot;min&quot;:&quot;15&quot;&#125;,&quot;uv&quot;:&quot;7&quot;,&quot;vis&quot;:&quot;16&quot;,&quot;wind&quot;:&#123;&quot;deg&quot;:&quot;141&quot;,&quot;dir&quot;:&quot;东南风&quot;,&quot;sc&quot;:&quot;微风&quot;,&quot;spd&quot;:&quot;5&quot;&#125;&#125;,&#123;&quot;astro&quot;:&#123;&quot;mr&quot;:&quot;12:41&quot;,&quot;ms&quot;:&quot;01:45&quot;,&quot;sr&quot;:&quot;05:41&quot;,&quot;ss&quot;:&quot;18:20&quot;&#125;,&quot;cond&quot;:&#123;&quot;code_d&quot;:&quot;104&quot;,&quot;code_n&quot;:&quot;305&quot;,&quot;txt_d&quot;:&quot;阴&quot;,&quot;txt_n&quot;:&quot;小雨&quot;&#125;,&quot;date&quot;:&quot;2017-04-05&quot;,&quot;hum&quot;:&quot;75&quot;,&quot;pcpn&quot;:&quot;2.3&quot;,&quot;pop&quot;:&quot;71&quot;,&quot;pres&quot;:&quot;1015&quot;,&quot;tmp&quot;:&#123;&quot;max&quot;:&quot;20&quot;,&quot;min&quot;:&quot;16&quot;&#125;,&quot;uv&quot;:&quot;8&quot;,&quot;vis&quot;:&quot;14&quot;,&quot;wind&quot;:&#123;&quot;deg&quot;:&quot;145&quot;,&quot;dir&quot;:&quot;南风&quot;,&quot;sc&quot;:&quot;微风&quot;,&quot;spd&quot;:&quot;3&quot;&#125;&#125;,&#123;&quot;astro&quot;:&#123;&quot;mr&quot;:&quot;13:41&quot;,&quot;ms&quot;:&quot;02:32&quot;,&quot;sr&quot;:&quot;05:40&quot;,&quot;ss&quot;:&quot;18:20&quot;&#125;,&quot;cond&quot;:&#123;&quot;code_d&quot;:&quot;306&quot;,&quot;code_n&quot;:&quot;305&quot;,&quot;txt_d&quot;:&quot;中雨&quot;,&quot;txt_n&quot;:&quot;小雨&quot;&#125;,&quot;date&quot;:&quot;2017-04-06&quot;,&quot;hum&quot;:&quot;81&quot;,&quot;pcpn&quot;:&quot;7.5&quot;,&quot;pop&quot;:&quot;100&quot;,&quot;pres&quot;:&quot;1010&quot;,&quot;tmp&quot;:&#123;&quot;max&quot;:&quot;22&quot;,&quot;min&quot;:&quot;13&quot;&#125;,&quot;uv&quot;:&quot;5&quot;,&quot;vis&quot;:&quot;10&quot;,&quot;wind&quot;:&#123;&quot;deg&quot;:&quot;189&quot;,&quot;dir&quot;:&quot;东北风&quot;,&quot;sc&quot;:&quot;微风&quot;,&quot;spd&quot;:&quot;7&quot;&#125;&#125;],&quot;hourly_forecast&quot;:[&#123;&quot;cond&quot;:&#123;&quot;code&quot;:&quot;100&quot;,&quot;txt&quot;:&quot;晴&quot;&#125;,&quot;date&quot;:&quot;2017-04-04 19:00&quot;,&quot;hum&quot;:&quot;62&quot;,&quot;pop&quot;:&quot;0&quot;,&quot;pres&quot;:&quot;1019&quot;,&quot;tmp&quot;:&quot;17&quot;,&quot;wind&quot;:&#123;&quot;deg&quot;:&quot;142&quot;,&quot;dir&quot;:&quot;东南风&quot;,&quot;sc&quot;:&quot;3-4&quot;,&quot;spd&quot;:&quot;18&quot;&#125;&#125;,&#123;&quot;cond&quot;:&#123;&quot;code&quot;:&quot;103&quot;,&quot;txt&quot;:&quot;晴间多云&quot;&#125;,&quot;date&quot;:&quot;2017-04-04 22:00&quot;,&quot;hum&quot;:&quot;72&quot;,&quot;pop&quot;:&quot;0&quot;,&quot;pres&quot;:&quot;1018&quot;,&quot;tmp&quot;:&quot;16&quot;,&quot;wind&quot;:&#123;&quot;deg&quot;:&quot;148&quot;,&quot;dir&quot;:&quot;东南风&quot;,&quot;sc&quot;:&quot;3-4&quot;,&quot;spd&quot;:&quot;18&quot;&#125;&#125;],&quot;now&quot;:&#123;&quot;cond&quot;:&#123;&quot;code&quot;:&quot;104&quot;,&quot;txt&quot;:&quot;阴&quot;&#125;,&quot;fl&quot;:&quot;18&quot;,&quot;hum&quot;:&quot;49&quot;,&quot;pcpn&quot;:&quot;0&quot;,&quot;pres&quot;:&quot;1019&quot;,&quot;tmp&quot;:&quot;19&quot;,&quot;vis&quot;:&quot;8&quot;,&quot;wind&quot;:&#123;&quot;deg&quot;:&quot;144&quot;,&quot;dir&quot;:&quot;东南风&quot;,&quot;sc&quot;:&quot;3-4&quot;,&quot;spd&quot;:&quot;16&quot;&#125;&#125;,&quot;status&quot;:&quot;ok&quot;,&quot;suggestion&quot;:&#123;&quot;air&quot;:&#123;&quot;brf&quot;:&quot;中&quot;,&quot;txt&quot;:&quot;气象条件对空气污染物稀释、扩散和清除无明显影响，易感人群应适当减少室外活动时间。&quot;&#125;,&quot;comf&quot;:&#123;&quot;brf&quot;:&quot;舒适&quot;,&quot;txt&quot;:&quot;白天不太热也不太冷，风力不大，相信您在这样的天气条件下，应会感到比较清爽和舒适。&quot;&#125;,&quot;cw&quot;:&#123;&quot;brf&quot;:&quot;不宜&quot;,&quot;txt&quot;:&quot;不宜洗车，未来24小时内有雨，如果在此期间洗车，雨水和路上的泥水可能会再次弄脏您的爱车。&quot;&#125;,&quot;drsg&quot;:&#123;&quot;brf&quot;:&quot;较舒适&quot;,&quot;txt&quot;:&quot;建议着薄外套、开衫牛仔衫裤等服装。年老体弱者应适当添加衣物，宜着夹克衫、薄毛衣等。&quot;&#125;,&quot;flu&quot;:&#123;&quot;brf&quot;:&quot;易发&quot;,&quot;txt&quot;:&quot;相对于今天将会出现大幅度降温，空气湿度较大，易发生感冒，请注意适当增加衣服。&quot;&#125;,&quot;sport&quot;:&#123;&quot;brf&quot;:&quot;较适宜&quot;,&quot;txt&quot;:&quot;阴天，较适宜进行各种户内外运动。&quot;&#125;,&quot;trav&quot;:&#123;&quot;brf&quot;:&quot;适宜&quot;,&quot;txt&quot;:&quot;天气较好，风稍大，但温度适宜，总体来说还是好天气。这样的天气适宜旅游，您可以尽情享受大自然的风光。&quot;&#125;,&quot;uv&quot;:&#123;&quot;brf&quot;:&quot;最弱&quot;,&quot;txt&quot;:&quot;属弱紫外线辐射天气，无需特别防护。若长期在户外，建议涂擦SPF在8-12之间的防晒护肤品。&quot;&#125;&#125;&#125;]&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用工具格式化"><a href="#使用工具格式化" class="headerlink" title="使用工具格式化"></a>使用工具格式化</h3><p>当我使用<a href="https://c.runoob.com/front-end/53" target="_blank" rel="noopener">工具</a>将这串字符格式化后更加清晰可读了。<br><img src="http://o7iipar59.bkt.clouddn.com//source/A002-3.jpg" alt="JSON格式化后"></p>
+<p>从图中可以看出清楚的看出整个和风天气json的结构，左边是格式化后代码，右边是一个树状图结构。<br>首先在整个结构的最外层是一个键值对，名称为HeWeather5（因为是x5版本），值为一JSON数组类型且这个数组仅含有一个JSONObject类型的元素。<br>接着，在这个JSONObject下面有7个键值对，名称分别是”aqi”（城市空气质量状况），”basic”（城市基础信息），”daily_forecast”（三天的日预报），”hourly_forecast”（每小时的预报），”now”（现在的天气情况），”status”（返回消息的状态），”suggestion”（建议信息）。他们对应着或是几组JSONObject或是JSONArray信息的值，甚至再接着嵌套多次信息。那么我们只要根据形势进行相应的展开就好了。<br><strong>下面</strong>，我将做示范。<br>别想了！这个嵌套我要写老久<del>，我好菜</del>。明天试试<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//占坑</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a><center>拓展</center></h2><h3 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h3><p>那么，当处理这些json嵌套的时候，首先要进行对数据的建模，然后解开这些嵌套，然后把相应的值给填进去。但当我们遇到一个更复杂的json时，这个工作就很是繁琐，所以下面就引入了很是方便的办法。</p>
+<h3 id="GSON使用"><a href="#GSON使用" class="headerlink" title="GSON使用"></a>GSON使用</h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>Gson（又称Google Gson）是Google公司发布的一个开放源代码的Java库，主要用途为序列化Java对象为JSON字符串，或反序列化JSON字符串成Java对象。<br>下面是我在Android 中使用GSON根据上述的和风天气的例子，进行解析的过程。</p>
+<h4 id="导包"><a href="#导包" class="headerlink" title="导包"></a>导包</h4><p>首先使用GSON需要导包，因为使用Android Studio的原因，只需要在app的gradle中的dependencies依赖中添加：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile &apos;com.google.code.gson:gson:2.7&apos;</span><br></pre></td></tr></table></figure></p>
+<h4 id="创建POJO类"><a href="#创建POJO类" class="headerlink" title="创建POJO类"></a>创建POJO类</h4><p>接着根据实际，需要创建<a href="https://en.wikipedia.org/wiki/Plain_old_Java_object" target="_blank" rel="noopener">POJO</a>类，根据分析后的json代码，当我们把第一层解开后，其实是一个JSONObject嵌套6个JSONObject和一个键值对的情况。那么我们根据实际需要（用到什么取什么或者是全取），取了aqi，basic等对应的5几个JSONObject类。下面单独拿出来几个进行讲解。</p>
+<blockquote>
+<p>例子①</p>
+</blockquote>
+<p>这边是经过格式化和tree化的aqi相关的json原码，注意两个红框处。<br><img src="http://o7iipar59.bkt.clouddn.com//source/A002-4.png" alt="aqi"><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//①Aqi.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Aqi</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> AqiCity city;</span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AqiCity</span></span>&#123;</span><br><span class="line">        <span class="keyword">public</span> String aqi;</span><br><span class="line">        <span class="keyword">public</span> String pm25;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在上述代码中，创建一个POJO类，其中仅有一个，名为city的内部类AqiCity成员变量，其中内部类AqiCity有两个公有变量：aqi和pm25。</p>
+<p>总结一下，<strong>每当JSONObject的内部有一个JSONObject，就需要在POJO类内部创建一个内部类并添加一个相应成员变量，该成员变量名应该和json键值对的键名相一致</strong>。</p>
+<p>下面这个图可以粗略的看出对应关系。<br><img src="http://o7iipar59.bkt.clouddn.com//source/A002-5.png" alt="json与pojo类对应关系"></p>
+<blockquote>
+<p>例子②</p>
+</blockquote>
+<p>这边是经过格式化和tree化的basic相关的json原码，注意两个红框处。<br><img src="http://o7iipar59.bkt.clouddn.com//source/A002-6.png" alt="basic"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//②Basic.java</span><br><span class="line">public class Basic &#123;</span><br><span class="line">    @SerializedName(&quot;city&quot;)</span><br><span class="line">    public String cityName;</span><br><span class="line">    </span><br><span class="line">    @SerializedName(&quot;id&quot;)</span><br><span class="line">    public String weatherId;</span><br><span class="line">    </span><br><span class="line">    public Update update;</span><br><span class="line">    public class Update&#123;</span><br><span class="line">        @SerializedName(&quot;loc&quot;)</span><br><span class="line">        public String UpdateTime;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在例子①中POJO类的变量名称和json的键值对的名称都是一样的，那么在上面的例子中，并不对应，那么这时就需要使用注解的方式：添加一个<code>@SerializedName(&quot;city&quot;)</code>进行注解。<br>但是如果我如果是不同服务器发出的json，仅仅只是键名不同，那么我的POJO类又该怎么处理呢？那么将注解这样写：</p>
+<pre><code>@SerializedName(value = &quot;cityName&quot;, alternate = {&quot;cityname&quot;, &quot;city_name&quot;})
+</code></pre><p>总之就是，<strong>如果 POJO对象/变量 想要和json中不一致，就需要注解</strong>。</p>
+<blockquote>
+<p>例子③</p>
+</blockquote>
+<p>这边是经过格式化的json原码，注意两个红框处。<br><img src="http://o7iipar59.bkt.clouddn.com//source/A002-7.jpg" alt="weather"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//③Weather.java</span><br><span class="line">public class Weather &#123;</span><br><span class="line">    public String status;</span><br><span class="line">    public Basic basic;</span><br><span class="line">    public Aqi aqi;</span><br><span class="line">    public Now now;</span><br><span class="line">    public Suggestion suggestion;</span><br><span class="line">    @SerializedName(&quot;daily_forecast&quot;)</span><br><span class="line">    public List&lt;Forecast&gt; forecastList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Weather.java是将这6个JSONObject和1个键值对嵌套在一起的POJO类，但是我们在嵌套的时候，又会遇到一个问题：daily_forecast对应的是一个JSONArray，JSONArray的每一个元素又是一个JSONObject这时候应该怎么做呢？<br>根据上面的代码，可以看出这里使用了List&lt;&gt;，使用java的list的泛型来构造。即，<strong>JSONArray型变量需要使用List创建并根据元素类型，选择是否要用泛型</strong>。</p>
+<p>总结三点:</p>
+<ol>
+<li><strong>每当JSONObject的内部有一个JSONObject，就需要在POJO类内部创建一个内部类并添加一个相应成员变量，该成员变量名应该和json键值对的键名相一致。</strong></li>
+<li><strong>如果 POJO对象/变量 想要和json中不一致，就需要注解。</strong></li>
+<li><strong>JSONArray型变量需要使用List创建并根据元素类型，选择是否要用泛型。</strong></li>
+</ol>
+<h4 id="JSON转化为GSON"><a href="#JSON转化为GSON" class="headerlink" title="JSON转化为GSON"></a>JSON转化为GSON</h4><p>最后，只需要将获取的json转化为gson就可以了，这里用到了gson的fromJson方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public static Weather handleWeatherResponse(String response)&#123;</span><br><span class="line">	try&#123;</span><br><span class="line">    //因为最外面仍有一个JSONObject所以，只需要手动把它解开接行了</span><br><span class="line">    JSONObject jsonObject = new JSONObject(response);</span><br><span class="line">    JSONArray jsonArray = jsonObject.getJSONArray(&quot;HeWeather5&quot;);</span><br><span class="line">    String weatherContent = jsonArray.getJSONObject(0).toString();</span><br><span class="line">    //fromJson方法需要包含两个参数，第一个为json代码，第二个为创建的POJO类</span><br><span class="line">    return new Gson().fromJson(weatherContent,Weather.class);</span><br><span class="line">    &#125;catch (Exception e)&#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">     &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果正常，这个函数就会返回一个Weather类型的值，此时我们需要的参数都包含在里面了！</p>
+<h3 id="One-More-Thing-Gsonformat"><a href="#One-More-Thing-Gsonformat" class="headerlink" title="One More Thing : Gsonformat"></a>One More Thing : Gsonformat</h3><ol>
+<li>重复大量的POJO创建工作是一件很伤脑经的事情，这里我们引入一个Android Studio的插件：Gsonformat，使用它就可以很方便的构造模型。<br>这里不做过多叙述了，<a href="http://blog.csdn.net/dreamlivemeng/article/details/51262538" target="_blank" rel="noopener">点击这个链接查看Gsonformat的配置以及使用</a>。</li>
+<li>本篇博文参考<a href="http://www.jianshu.com/p/e740196225a4" target="_blank" rel="noopener">你真的会用Gson吗?Gson使用指南（一） - 简书</a>。是一篇非常好的参考gson使用指南。</li>
+<li><a href="http://www.jianshu.com/p/6f5f818afe4b?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="noopener">推荐几款实用的Android Studio 插件 - 简书</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/JAVA/" rel="tag">#JAVA</a>
+          
+            <a href="/tags/JSON/" rel="tag">#JSON</a>
+          
+            <a href="/tags/GSON/" rel="tag">#GSON</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/22/A001/" rel="next" title="Android 中 从arrays.xml读取资源（string、drawable等）">
+                <i class="fa fa-chevron-left"></i> Android 中 从arrays.xml读取资源（string、drawable等）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/10/J001/" rel="prev" title="【转】Android学习资源网站大全">
+                【转】Android学习资源网站大全 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#何为JSON"><span class="nav-number">1.</span> <span class="nav-text">何为JSON</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON基本语法规则"><span class="nav-number">2.</span> <span class="nav-text">JSON基本语法规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对象"><span class="nav-number">2.1.</span> <span class="nav-text">对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组"><span class="nav-number">2.2.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#键值对"><span class="nav-number">2.3.</span> <span class="nav-text">键值对</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JSON基本解析实例"><span class="nav-number">3.</span> <span class="nav-text">JSON基本解析实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一个简单的小例子"><span class="nav-number">3.1.</span> <span class="nav-text">一个简单的小例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">4.</span> <span class="nav-text">实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#和风天气api返回json结果"><span class="nav-number">4.1.</span> <span class="nav-text">和风天气api返回json结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用工具格式化"><span class="nav-number">4.2.</span> <span class="nav-text">使用工具格式化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">5.</span> <span class="nav-text">拓展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引子"><span class="nav-number">5.1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GSON使用"><span class="nav-number">5.2.</span> <span class="nav-text">GSON使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#简介"><span class="nav-number">5.2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导包"><span class="nav-number">5.2.2.</span> <span class="nav-text">导包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建POJO类"><span class="nav-number">5.2.3.</span> <span class="nav-text">创建POJO类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSON转化为GSON"><span class="nav-number">5.2.4.</span> <span class="nav-text">JSON转化为GSON</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#One-More-Thing-Gsonformat"><span class="nav-number">5.3.</span> <span class="nav-text">One More Thing : Gsonformat</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2017/03/28/A002/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+

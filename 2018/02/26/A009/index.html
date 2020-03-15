@@ -1,0 +1,1028 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Anroid,持久化,SQLite,SharedPreferences,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="银子问题描述：当Android 机器突然断电时，如果此时正在进行文件的读写操作，文件会处于不安全状态，可能会导致文件的丢失。原因：Linux/Unix系统中，在文件或数据处理过程中一般先放到内存缓冲区中，等到适当的时候再写入磁盘。正常的文件写入流程为：用户程序-&amp;gt;用户缓冲-&amp;gt;内核缓冲-&amp;gt;物理介质因此当FileOutputStream 处于write并没有进行flush操作，文件仅">
+<meta name="keywords" content="Anroid,持久化,SQLite,SharedPreferences">
+<meta property="og:type" content="article">
+<meta property="og:title" content="持久化方案断电测试对比">
+<meta property="og:url" content="https://rabbitknight.net/2018/02/26/A009/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:description" content="银子问题描述：当Android 机器突然断电时，如果此时正在进行文件的读写操作，文件会处于不安全状态，可能会导致文件的丢失。原因：Linux/Unix系统中，在文件或数据处理过程中一般先放到内存缓冲区中，等到适当的时候再写入磁盘。正常的文件写入流程为：用户程序-&amp;gt;用户缓冲-&amp;gt;内核缓冲-&amp;gt;物理介质因此当FileOutputStream 处于write并没有进行flush操作，文件仅">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-26T09:19:52.192Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="持久化方案断电测试对比">
+<meta name="twitter:description" content="银子问题描述：当Android 机器突然断电时，如果此时正在进行文件的读写操作，文件会处于不安全状态，可能会导致文件的丢失。原因：Linux/Unix系统中，在文件或数据处理过程中一般先放到内存缓冲区中，等到适当的时候再写入磁盘。正常的文件写入流程为：用户程序-&amp;gt;用户缓冲-&amp;gt;内核缓冲-&amp;gt;物理介质因此当FileOutputStream 处于write并没有进行flush操作，文件仅">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> 持久化方案断电测试对比 | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                持久化方案断电测试对比
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-02-26T10:10:10+08:00" content="2018-02-26">
+              2018-02-26
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2018/02/26/A009/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2018/02/26/A009/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2018/02/26/A009/" class="leancloud_visitors" data-flag-title="持久化方案断电测试对比">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="银子"><a href="#银子" class="headerlink" title="银子"></a><center>银子</center></h3><p>问题描述：<br>当Android 机器突然断电时，如果此时正在进行文件的读写操作，文件会处于不安全状态，可能<br>会导致文件的丢失。<br>原因：<br>Linux/Unix系统中，在文件或数据处理过程中一般先放到内存缓冲区中，等到适当的时候再写入磁盘。<br>正常的文件写入流程为：<br>用户程序-&gt;用户缓冲-&gt;内核缓冲-&gt;物理介质<br>因此当FileOutputStream 处于write并没有进行flush操作，文件仅处于于缓存中，没有写入磁盘介质，此时突然断电，用户程序丢失文件缓存，文件就丢失了。<br>因此，设计到文件的程序都可能引起文件丢失问题。<br><a id="more"></a></p>
+<h3 id="持久化方案选择"><a href="#持久化方案选择" class="headerlink" title="持久化方案选择"></a>持久化方案选择</h3><h4 id="SharedPreferences"><a href="#SharedPreferences" class="headerlink" title="SharedPreferences"></a>SharedPreferences</h4><h5 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h5><p>SharedPreference字面上意思为共享的偏好。用以存储用户的一些简单的配置信息，例如夜间模式、用户登录信息等。存放目录为/data/data/appname/shared_prefs/xxx.xml文件中。并以键值对的形式存储数据。例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;map&gt;</span><br><span class="line">	&lt;string name=&quot;4957&quot;&gt;4957&lt;/string&gt;</span><br><span class="line">&lt;/map&gt;</span><br></pre></td></tr></table></figure></p>
+<p>SharePreferences是线程安全的，但是并不是进程安全。</p>
+<h5 id="断电测试"><a href="#断电测试" class="headerlink" title="断电测试"></a>断电测试</h5><p>下面使用Runnable进行1w条数据的循环写入测试。</p>
+<ol>
+<li>进行插入操作。</li>
+<li>系统在apply2404条数据后，手动断电。</li>
+<li>恢复电源。进入<code>/data/data/appname/shared_prefs</code>目录下，发现 test.xml文件仍在。</li>
+<li>重新运行测试app，进行读取操作，发现 仅能读取295条数据。</li>
+<li>在shell命令中，将test.xml手动删除。在未重启测试程序的情况下重新读取，发现仍能读取出295条数据。</li>
+<li>故得出推论：使用SharePreferences，在频繁大量写入时，如果突然断电，部分的数据因为暂时存储在缓存中没有调用<code>Editor.commit()</code> 导致事务没来得及保存，但文件并不会丢失。</li>
+</ol>
+<p><strong>!!!上述问题 实际在存储到2404条内容超过3gb引起OOM异常了。。</strong>上述结论均不成立!。</p>
+<ol>
+<li>真正结论是SharePreferences在读写的过程中会把整个xml文件拿出来，导致占用过多的运行空间， SharePreferences推荐用于轻量级别的数量存储！</li>
+<li>同时！当oom异常后会有test.xml.bak的备份文件出现。当重新运行后，调用<code>Activity.getSharedPreferences</code>方法时被恢复。但是数据仅有295条数据</li>
+<li>重新测试，插入2000条数据，ok并没有出现问题。</li>
+<li>现在，在插入每一条数据后，线程sleep+1s。拔掉电源，查看状态。插入69条数据时，断电。恢复电源重新运行设备。进行读取，发现可以成功读取69条数据。<br>推论：SharePreferences低频存储时，当突然断电，数据存在消失风险，但是SharePreferences有备份机制，存储的数据完整性较好。但是存储读取效率不高，内存出现抖动。</li>
+</ol>
+<blockquote>
+<p>参考</p>
+<ol>
+<li><a href="https://juejin.im/entry/597446ed6fb9a06bac5bc630" target="_blank" rel="noopener">彻底搞懂 SharedPreferences - Android - 掘金</a><br>2.<a href="http://extremej.itscoder.com/shared_preferences_source" target="_blank" rel="noopener">对 SharedPreferences 再多一点了解 | Joe is a thin man</a></li>
+</ol>
+</blockquote>
+<h4 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h4><h5 id="基本-1"><a href="#基本-1" class="headerlink" title="基本"></a>基本</h5><p>sqlite是Android上使用的轻量级别的数据库。</p>
+<h5 id="断电测试-1"><a href="#断电测试-1" class="headerlink" title="断电测试"></a>断电测试</h5><p>测试使用了GreenDao作为数据库orm库。GreenDao使用插件编译成sql语言，解析速度最快。</p>
+<ol>
+<li>首先断电。插入循环1w条数据，在系统关闭之前 1w条数据已经插入完成。</li>
+<li>恢复电力，进入databases查看。，发现test.db仍存在。</li>
+<li>运行测试程序进行读取。发现取出的数据数为1w。数据并未丢失。</li>
+<li>现在在插入每一条数据后线程sleep 1s；在插入69条数据时，系统关闭。</li>
+<li>重启机器，进行查询操作，发现能够查到73条数据。。</li>
+<li>推测 logcat还没成功打印出来插入操作已经结束。</li>
+</ol>
+<p>因此，使用SQLite能够较为快速的存储数据，同时能够较好的保持数据的完整性。</p>
+<h6 id="ORM选择"><a href="#ORM选择" class="headerlink" title="ORM选择"></a>ORM选择</h6><p>ORM即 Object Relational Mapping 对象关系映射。Android/Java开发者更应该聚焦的是对于对象的处理。虽然Android有SQLiteOpenHelper帮助我们处理数据库，但是需要编写SQL语句，而且SQL语句的规范不能良好的检测。同时一些事务处理机制例如多线程等需要自己来实现，很麻烦。<br>现在网上有不少开源库，例如GreenDao，realm，LitePal等。LitePal为较新框架作者是郭霖，目前有4.5k star。GreenDao在github上有9.8k的star。Realm有9.2k。</p>
+<ul>
+<li><p>LitePal的bean对象需要继承DataSupport，同时需要编写asset文件。</p>
+</li>
+<li><p>Realm需要继承RealmObject，虽然跨平台，但是有一定的限制。</p>
+</li>
+<li>GreenDao实际使用构建工具将sql语句生成出来，同时生成Dao类用于完成各种数据库操作，也保持原pojo类的独立性。因为GreenDao实际的底层使用sql语句，故效率上很高。网上也有较多文档供参考。 同时开源库小于100KB</li>
+</ul>
+<p>ORM第三方库选择参考：</p>
+<ol>
+<li><a href="https://juejin.im/post/5958fe70f265da6c49777c94" target="_blank" rel="noopener">Android目前流行三方数据库ORM分析及对比 - 掘金</a></li>
+<li><a href="https://juejin.im/post/5959b5bcf265da6c4d1bb245" target="_blank" rel="noopener">Android ORM 框架：GreenDao 使用详解（基础篇） - 掘金</a></li>
+<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/1203/3743.html" target="_blank" rel="noopener">为什么我不再使用Realm - 泡在网上的日子</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Anroid/" rel="tag">#Anroid</a>
+          
+            <a href="/tags/持久化/" rel="tag">#持久化</a>
+          
+            <a href="/tags/SQLite/" rel="tag">#SQLite</a>
+          
+            <a href="/tags/SharedPreferences/" rel="tag">#SharedPreferences</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/25/A008/" rel="next" title="写了一个Gank客户端">
+                <i class="fa fa-chevron-left"></i> 写了一个Gank客户端
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/26/A010/" rel="prev" title="沉浸式状态栏之fitsystemWindows">
+                沉浸式状态栏之fitsystemWindows <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#银子"><span class="nav-number">1.</span> <span class="nav-text">银子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久化方案选择"><span class="nav-number">2.</span> <span class="nav-text">持久化方案选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SharedPreferences"><span class="nav-number">2.1.</span> <span class="nav-text">SharedPreferences</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本"><span class="nav-number">2.1.1.</span> <span class="nav-text">基本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#断电测试"><span class="nav-number">2.1.2.</span> <span class="nav-text">断电测试</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQLite"><span class="nav-number">2.2.</span> <span class="nav-text">SQLite</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">基本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#断电测试-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">断电测试</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#ORM选择"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">ORM选择</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2018/02/26/A009/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+

@@ -1,0 +1,1081 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Android,RecyclerView,UI,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="R.K's Blog" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="银子最近在进阶研究RecyclerView。主要包括其三个抽离出来的东东，包括ItemDecoration、LayoutManager、Animator。其中ItemDecoration花费我大概一天的时间。基本上对于ItemDecoration的布局原理较为熟悉，并发布了一bolg，本打算继续学Animator，粗略看了一下，发现：哇！函数好多，好麻烦。遂罢，还是先看LayoutManager吧">
+<meta name="keywords" content="Android,RecyclerView,UI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RecyclerView之自定义LayoutManager">
+<meta property="og:url" content="https://rabbitknight.net/2017/12/19/A005/index.html">
+<meta property="og:site_name" content="R.K&#39;s Blog">
+<meta property="og:description" content="银子最近在进阶研究RecyclerView。主要包括其三个抽离出来的东东，包括ItemDecoration、LayoutManager、Animator。其中ItemDecoration花费我大概一天的时间。基本上对于ItemDecoration的布局原理较为熟悉，并发布了一bolg，本打算继续学Animator，粗略看了一下，发现：哇！函数好多，好麻烦。遂罢，还是先看LayoutManager吧">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-20T03:01:44.599Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RecyclerView之自定义LayoutManager">
+<meta name="twitter:description" content="银子最近在进阶研究RecyclerView。主要包括其三个抽离出来的东东，包括ItemDecoration、LayoutManager、Animator。其中ItemDecoration花费我大概一天的时间。基本上对于ItemDecoration的布局原理较为熟悉，并发布了一bolg，本打算继续学Animator，粗略看了一下，发现：哇！函数好多，好麻烦。遂罢，还是先看LayoutManager吧">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: false,
+    motion: true,
+    duoshuo: {
+      userId: 6286661389951960000,
+      author: '南柯（Author）'
+    }
+  };
+</script>
+
+  <title> RecyclerView之自定义LayoutManager | R.K's Blog </title>  
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="http://s95.cnzz.com/z_stat.php?id=1261677420&web_id=1261677420" type="text/javascript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">R.K's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Learn and See</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-guestbook">
+          <a href="/guestbook" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            留言
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                RecyclerView之自定义LayoutManager
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-19T10:00:00+08:00" content="2017-12-19">
+              2017-12-19
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2017/12/19/A005/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2017/12/19/A005/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/12/19/A005/" class="leancloud_visitors" data-flag-title="RecyclerView之自定义LayoutManager">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="银子"><a href="#银子" class="headerlink" title="银子"></a><center>银子</center></h3><p>最近在进阶研究RecyclerView。主要包括其三个抽离出来的东东，包括ItemDecoration、LayoutManager、Animator。其中ItemDecoration花费我大概一天的时间。基本上对于ItemDecoration的布局原理较为熟悉，并发布了一bolg，本打算继续学Animator，粗略看了一下，发现：哇！函数好多，好麻烦。遂罢，还是先看LayoutManager吧，常规开发仅需要定义仨方法，似乎还蛮简单的。结果！！花费了整整一周的时间。终于打通！当然，对于LayoutManager的掌握只能说较熟悉，还不是特别融会贯通。<br>通过常规的搜索，发现，</p>
+<ol>
+<li>其实网上对于自定义LayoutManager的文章确实比较少。</li>
+<li>大部分都是简单对于少量数据的处理，没有涉及到回收机制，因为回收是需要自己做的。</li>
+<li>有些较好的实例也没能由浅入深的展开。<br>因此，本篇，在google，百度过后，emmm，小小的宣称，初步学习LayoutManager，这一篇就OJBK了。<br>整片文章布局大概如下：</li>
+<li>常规三个方法的说明，非常基础但是很重要的东西</li>
+<li>以常规竖向滑动为例，讲解如何自定义一个LayoutManager。<a id="more"></a>
+</li>
+</ol>
+<h3 id="基础"><a href="#基础" class="headerlink" title="基础"></a><center>基础</center></h3><p>本节主要是仨函数，generateDefaultLayoutParams、onLayoutChildren与scrollVerticallyBy。</p>
+<h4 id="generateDefaultLayoutParams"><a href="#generateDefaultLayoutParams" class="headerlink" title="generateDefaultLayoutParams"></a>generateDefaultLayoutParams</h4><p>这是定义Recycler的LayoutParams，一般就是下面代码实现就可以，没啥好说的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public RecyclerView.LayoutParams generateDefaultLayoutParams() &#123;</span><br><span class="line">    return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, </span><br><span class="line">            ViewGroup.LayoutParams.WRAP_CONTENT);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>mark一下，之前有在国外一个网站看到个例子，定义generateLayoutParams几个方法的，这还没研究到。国内的大部分博客都是上述代码中的做法，emmm，我也是大部分。</p>
+<h4 id="scrollVerticallyBy"><a href="#scrollVerticallyBy" class="headerlink" title="scrollVerticallyBy"></a>scrollVerticallyBy</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scrollVerticallyBy(int dy,				//在屏幕坐标系中零碎滑动的距离。</span><br><span class="line">	RecyclerView.Recycler recycler,  	//回收处理用 </span><br><span class="line">	RecyclerView.State state)	        //Recycler状态</span><br></pre></td></tr></table></figure>
+<ul>
+<li>dy<br>这是滑动相关的代码，dy是断时间滑动的距离。注意：<br><strong>dy&gt;0,代表上拉！！即页面往Y坐标负方向滑动，整个界面向上！</strong><br><strong>dy&lt;0,代表下拉！！即页面往Y坐标正方向滑动，整个界面向下！</strong><br>刚开始我弄错了方向，导致很迷！！上面是我实际研究过的情况。！！</li>
+<li>recycler<br>回收复用专用类，我们不需要考虑一个item是复用的还是重新创建的。只要问它要就好！<br>在代码中，常用几个方法：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>detachAndScrapAttachedViews(recycler)</td>
+<td>从屏幕上移掉，并且把item拆离开。</td>
+</tr>
+<tr>
+<td>recycler.getViewForPosition(position)</td>
+<td>从recycler获取一个item，注意！！position是在整个item中的具体位置，就是你数据里面的第几条数据的位置。</td>
+</tr>
+<tr>
+<td>removeAndRecycleView(item, recycler)</td>
+<td>移除单个item，并把它回收到recycler中。itemView是View类型的</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>state<br>这个方法，在google实现的LinearLayoutManager中用到，我。。没用过诶，不过它保存着一些RecyclerView的状态信息。emmm再具体就不知道了。</li>
+</ul>
+<h4 id="onLayoutChildren"><a href="#onLayoutChildren" class="headerlink" title="onLayoutChildren"></a>onLayoutChildren</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">onLayoutChildren(RecyclerView.Recycler recycler, </span><br><span class="line"> RecyclerView.State state </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p> 这个方法主要是用于初始布局的。如果不调用NotifyXXX方法，只会调用俩次。至于为啥是俩次，一次布局，一次具体布局？emmm，参考文献有写。</p>
+<h4 id="其他非常重要的方法"><a href="#其他非常重要的方法" class="headerlink" title="其他非常重要的方法"></a>其他非常重要的方法</h4><p>这里的代码也是经常会用到的:</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getChildCount()</td>
+<td>获取界面可见位置，有多少个子item。因此这个值很少，多的item被回收掉了！所以才是Recycler的View</td>
+</tr>
+<tr>
+<td>addView(view),addView(view,position)</td>
+<td>将一个获取到的item添加到屏幕可见列表上去。此时还不可见</td>
+</tr>
+<tr>
+<td>measureChildWithMargins(view)</td>
+<td>要求测量item的布局，把一个item addView之后要测量一下</td>
+</tr>
+<tr>
+<td>getDecoratedMeasuredWidth()</td>
+<td>你上面要求measure一下，就能知道它的宽高了，这里就是获取宽度具体大小，如果你不傻，就知道获取高度是啥了。这里的宽度，包含有你通过ItemDecoration装饰过的大小</td>
+</tr>
+<tr>
+<td>layoutDecoratedWithMargins(view,l,t,r,b)</td>
+<td>把addView后的item给它填充的具体的某个位置，这个位置通过ltrb确定！就是上下左右，注意！这里的上下左右，是屏幕绝对位置的坐标</td>
+</tr>
+<tr>
+<td>getDecoratedTop(view)</td>
+<td>获取view的上坐标，这里的view包含了你装饰后的尺寸，还有Left，Right，Bottom，还是只要你不傻就知道什么意思</td>
+</tr>
+<tr>
+<td>offsetChildrenVertical(distance)</td>
+<td>将整个列表移动，这里的distance，就是X0Y坐标系正常方向的位移了</td>
+</tr>
+</tbody>
+</table>
+<h3 id="一个竖直位移的带回收的列表"><a href="#一个竖直位移的带回收的列表" class="headerlink" title="一个竖直位移的带回收的列表"></a><center>一个竖直位移的带回收的列表</center></h3><p>一个列表的过程主要如下：</p>
+<ol>
+<li>布局</li>
+<li>回收</li>
+<li>填充</li>
+<li>移动</li>
+</ol>
+<p>其中，布局主要有俩个地方用，1.在onLayoutChildren中第一次布局；2.在移动过程中需要不断回收和填充<br>我们将 布局，填充独立为一个layout方法。<br>将回收和移动 拆成 offset方法。</p>
+<h4 id="layout-RecyclerView-Recycler-State"><a href="#layout-RecyclerView-Recycler-State" class="headerlink" title="layout(RecyclerView.Recycler,State)"></a>layout(RecyclerView.Recycler,State)</h4><p>首先在onLayoutChild中，我们第一次布局。这里讲解见注释。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">if (getItemCount()==0)&#123;	//获取item的总数，若为0，当然不需要布局了。</span><br><span class="line">    detachAndScrapAttachedViews(recycler);//全拿掉</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line">if (getChildCount()==0&amp;&amp;state.isPreLayout())&#123;	//若屏幕上没有item，并且在PreLayout中会做动画效果，此时也直接返回</span><br><span class="line">    return;</span><br><span class="line">&#125;</span><br><span class="line">mVerticalOffset = 0;	//</span><br><span class="line">mFirstPosition = 0;		//能看到的第一个item具体到整个列表中的位置</span><br><span class="line">mLastPosition = getItemCount() -1;		//能看到的最后一个item具体到列表中的具体位置</span><br><span class="line">detachAndScrapAttachedViews(recycler);	//全拿掉，因为我们需要自己布局！</span><br><span class="line">layout(recycler,state,0);				//进入到我们自己的layout方法进行布局</span><br></pre></td></tr></table></figure></p>
+<p>下面进入到layout方法，我们只看咋初始布局的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">int topOffset = getPaddingTop();</span><br><span class="line">int bottomOffset = getPaddingTop();</span><br><span class="line">if (getChildCount()&gt;0)&#123;     //如果不是第一次布局，肯定会有getChildCount&gt;0</span><br><span class="line">	... 					//省略了一些无关代码</span><br><span class="line">&#125;else &#123;                     //如果是第一次布局，从0开始布局</span><br><span class="line">for (int i =0;i&lt;mLastPosition;i++)&#123;	//遍历哦老铁,从0到能看到的最后一个位置</span><br><span class="line">		View view = recycler.getViewForPosition(i);	//根据整个列表中的位置，问recycler要个item的实例。</span><br><span class="line">        addView(view);    //把item添加到可见列表中</span><br><span class="line">        measureChildWithMargins(view,0,0);    //对item进行测量</span><br><span class="line">        layoutDecoratedWithMargins(view,      //将item layout到可视列表中，这里是绝对的位置</span><br><span class="line">                getPaddingLeft(),</span><br><span class="line">                topOffset,</span><br><span class="line">                getPaddingLeft()+getDecoratedMeasuredWidth(</span><br><span class="line">                topOffset+getDecoratedMeasuredHeight(view)</span><br><span class="line">        );</span><br><span class="line">        topOffset += getDecoratedMeasuredHeight(view);  //offset为，偏移距离，辅助我们排放列表</span><br><span class="line">        if (topOffset &gt; getHeight() - getPaddingBottom())&#123;</span><br><span class="line">            mLastPosition = i;    //如果偏移的位置，超过了底部边界。那么此时的i指向的就是最后一个位置</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (topOffset &lt; getHeight() - getPaddingBottom())&#123;</span><br><span class="line">        canScroll = false;        //没放满当然不可滑动了</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过上面的过程，我们首次<strong>将item排放到屏幕上的可视区域</strong>。并且<strong>获得了</strong>屏幕中，第一个item和最后一个item对应的真实位置，即：<strong>mFirstPosition和mLastPosition</strong>。</p>
+<p>如果不是第一次布局，则会进入下面的代码流程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">if (getChildCount()&gt;0)&#123;     //如果不是第一次布局</span><br><span class="line">	//通过下面的代码，获取当前屏幕上可视的，第一个和最后一个item真实的position</span><br><span class="line">	//topOffset为最后一个item的top边界；bottomOffset为第一个item的bottom边界，这些用于做回收判断。</span><br><span class="line">    View last = getChildAt(getChildCount()-1); </span><br><span class="line">    maxPos = getPosition(last);</span><br><span class="line">    topOffset = getDecoratedBottom(last);</span><br><span class="line">    View firstView = getChildAt(0);</span><br><span class="line">    minPos = getPosition(firstView);</span><br><span class="line">    bottomOffset = getDecoratedTop(firstView);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>下面的代码，我们做填充。注意一个逻辑！<br><strong>当上拉时，我们的可视列表，头部渐渐消失在屏幕上，尾部逐渐出现在屏幕上。</strong><br>在下拉时，相反。<br><strong>因此，我们在填充的时候，需要根据偏移的距离dy，判断上拉或下拉，借此分别做填充布局。<br>如果上拉，判断最后一个item的底部在偏移dy后，是否超过底部界限，若超过，就需要在底部填充一个item，并把mLastPosition的位置+1。</strong><br>如果下拉，类比操作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">//滑动，填充布局</span><br><span class="line">if (dy &gt; 0)&#123;   //上拉，需要填充下面的，从最后一个位置开始填充</span><br><span class="line">    for(int i=maxPos+1;i&lt;getItemCount();i++)&#123;    </span><br><span class="line">        if (topOffset -dy &gt;getHeight() -getPaddingBottom())&#123;</span><br><span class="line">            break;  //如果偏移的 距离并不超过。直接break。不需要填充。</span><br><span class="line">        &#125;</span><br><span class="line">        View last = recycler.getViewForPosition(i);    //问recycler要一个item</span><br><span class="line">        addView(last);                                 //添加到屏幕的可见列表中</span><br><span class="line">        measureChildWithMargins(last,0,0);             //别忘了请求测量一下</span><br><span class="line">        layoutDecoratedWithMargins(last,               //然后把它layout出来</span><br><span class="line">                getPaddingLeft(),</span><br><span class="line">                topOffset,</span><br><span class="line">                getPaddingLeft() + getDecoratedMeasur</span><br><span class="line">                topOffset + getDecoratedMeasuredHeigh</span><br><span class="line">        );</span><br><span class="line">        topOffset += getDecoratedMeasuredHeight(last)</span><br><span class="line">        mLastPosition = i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;else if (dy &lt; 0)&#123;  //下拉，需要填充上面的，从第一个位置开始</span><br><span class="line">    for (int i=minPos-1;i&gt;=0;i--)&#123;</span><br><span class="line">        if (bottomOffset -dy &lt;getPaddingTop())&#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        View first = recycler.getViewForPosition(i);</span><br><span class="line">        addView(first,0);    //**注意！这里的addView需要我们将item添加到0位置！否则，往后步骤中通过getChildAt()方法获取到的item，并不是这个item，而是之前的item**</span><br><span class="line">        measureChildWithMargins(first,0,0);</span><br><span class="line">        layoutDecoratedWithMargins(first,</span><br><span class="line">                getPaddingLeft(),</span><br><span class="line">                bottomOffset - getDecoratedMeasuredHe</span><br><span class="line">                getPaddingLeft() + getDecoratedMeasur</span><br><span class="line">                bottomOffset</span><br><span class="line">        );</span><br><span class="line">        bottomOffset -= getDecoratedMeasuredHeight(fi</span><br><span class="line">        mFirstPosition = i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>上面就是布局和填充的过程。需要注意的是，填充的代码addView方法，要注意区别。</p>
+<p> 如果，进行上拉或者下拉操作，scrollVerticallyBy方法，就会被回调，同时参数dy表明位移的距离，但是，dy这个参数可能会在边界的位置被修复，因此我们不能直接用dy来作为偏移的距离。在位移时，会调用我们自己的offset函数，接收scrollVerticallyBy的三个参数。下面为offset代码，具体解释，见代码。<br> offset函数的功能主要有俩，回收和位移。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">private int offset(RecyclerView.Recycler recycler, RecyclerView.State state,int dy)&#123;</span><br><span class="line">	//首先计算真实的偏移距离</span><br><span class="line">    int realOffset = dy;  //realoffset为真实距离，默认为dy，需要我们重新计算</span><br><span class="line">    if (dy&lt;0)&#123;  //下拉，判断顶部是否超过边界超过修复。</span><br><span class="line">        View firstChild = getChildAt(0);    //通过界面上可见第一个item来计算是否可见</span><br><span class="line">        if (getPosition(firstChild)==0)&#123;    //只有可见的第一个item为列表中的第一个item才需要重新计算dy</span><br><span class="line">            int gap =  getDecoratedTop(firstChild) - getPaddingTop();  //gap为第一个item顶部边界与顶部边界的位移差</span><br><span class="line">            if (gap &gt;= 0)&#123;    //如果大于0，需要修复，把realOffset做反向修复。</span><br><span class="line">                realOffset = -gap;</span><br><span class="line">            &#125;else &#123;           </span><br><span class="line">            //如果小于0，取两者之间较大值，原因是，在连续的位移过程中，当头部刚被填充一个item，此时的gap值就特别小，所以仍以gap为准会导致第一个item从1突然变为0。</span><br><span class="line">                realOffset = Math.max(realOffset,gap);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;else if (dy&gt;0)&#123;    //上拉，判断底部是否超过边界</span><br><span class="line">        View lasChild = getChildAt(getChildCount() - 1);    //上拉同理，要判断最后一个item</span><br><span class="line">        if (getPosition(lasChild) == getItemCount() - 1) &#123;</span><br><span class="line">            int gap = getHeight() - getPaddingTop() - getDecoratedBottom(lasChild);</span><br><span class="line">            if (gap &gt;= 0) &#123;</span><br><span class="line">                realOffset = -gap;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                realOffset = Math.min(realOffset, -gap);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //下面的代码进行回收</span><br><span class="line">    if (getChildCount()&gt;0) &#123;     //当前屏幕上有item</span><br><span class="line">	    //回收针对的是可见的item，判断其在位移dy会不会被不可见，若不可见则回收。</span><br><span class="line">        for (int i = 0; i &lt; getChildCount(); i++) &#123;    //从屏幕上第一个item开始遍历。</span><br><span class="line">            View child = getChildAt(i);    //通过getChildAt(i)来获取具体的itme</span><br><span class="line">            measureChildWithMargins(child, 0, 0);</span><br><span class="line">            if (dy &lt; 0) &#123;  //下拉仅需判断下边界是否会越界</span><br><span class="line">                if (getDecoratedTop(child) - realOffset &gt; getHeight() - getPaddingBottom()) &#123;  //判断item的顶部在位移后，是否超出底部边界</span><br><span class="line">                    removeAndRecycleView(child, recycler);       //回收item</span><br><span class="line">                    mLastPosition--;                             //最后的item位置减一</span><br><span class="line">                    break;                                       //一般同时只会有一个item出界。</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else if (dy &gt; 0) &#123;    //上拉仅需判断下边界是否越界</span><br><span class="line">                if (getDecoratedBottom(child) - realOffset &lt; getPaddingTop()) &#123;</span><br><span class="line">                    removeAndRecycleView(child, recycler);</span><br><span class="line">                    mFirstPosition++;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //调用自定义layout方法，重新布局。</span><br><span class="line">    layout(recycler,state,realOffset);</span><br><span class="line">    mVerticalOffset += realOffset;</span><br><span class="line">    offsetChildrenVertical(-realOffset);    //调用offsetChildrenVertical进行位移，但是注意参数要取反。</span><br><span class="line">    return realOffset;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上就是offset位移和回收的全部代码。因为回收之后需要重新布局，所以此时要引入layout进行布局。需要注意的有注意真实位移的计算realOffset。</p>
+<p>本例仅为笔者在学习自定义LayoutManager中自己实现的一个layoutManager，当然能力有限，仍有欠缺，当和一些其他博文相比，还是算比较详细的。</p>
+<h3 id="博客参考"><a href="#博客参考" class="headerlink" title="博客参考"></a><center>博客参考</center></h3><ol>
+<li><a href="http://blog.csdn.net/zxt0601/article/details/52948009" target="_blank" rel="noopener">【Android】掌握自定义LayoutManager(一) 系列开篇 常见误区、问题、注意事项，常用API。 - CSDN博客</a></li>
+<li><a href="http://blog.csdn.net/lylodyf/article/details/52846602" target="_blank" rel="noopener">自定义LayoutManager的详解及其使用 - CSDN博客</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+	
+	<div>
+		
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ the end ------</div>
+    
+</div>
+		
+	</div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/RecyclerView/" rel="tag">#RecyclerView</a>
+          
+            <a href="/tags/UI/" rel="tag">#UI</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/13/A004/" rel="next" title="RecyclerView之ItemDecoration">
+                <i class="fa fa-chevron-left"></i> RecyclerView之ItemDecoration
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/22/A006/" rel="prev" title="Android USB相关">
+                Android USB相关 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+		<div id="hypercomments_widget"></div>
+  
+ </div>
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="RabbitKnight">
+          <p class="site-author-name" itemprop="name">RabbitKnight</p>
+          <p class="site-description motion-element" itemprop="description">Yesterday you said tomorrow.</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/rabbitknight" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/p/1005052500123380/home?from=page_100505&mod=TAB&is_all=1#place" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/southtree/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://rabbitknight.net/about/" title="关于我" target="_blank">关于我</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#银子"><span class="nav-number">1.</span> <span class="nav-text">银子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基础"><span class="nav-number">2.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#generateDefaultLayoutParams"><span class="nav-number">2.1.</span> <span class="nav-text">generateDefaultLayoutParams</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scrollVerticallyBy"><span class="nav-number">2.2.</span> <span class="nav-text">scrollVerticallyBy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onLayoutChildren"><span class="nav-number">2.3.</span> <span class="nav-text">onLayoutChildren</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他非常重要的方法"><span class="nav-number">2.4.</span> <span class="nav-text">其他非常重要的方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个竖直位移的带回收的列表"><span class="nav-number">3.</span> <span class="nav-text">一个竖直位移的带回收的列表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#layout-RecyclerView-Recycler-State"><span class="nav-number">3.1.</span> <span class="nav-text">layout(RecyclerView.Recycler,State)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#博客参考"><span class="nav-number">4.</span> <span class="nav-text">博客参考</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+	
+<div class="copyright">
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">RabbitKnight</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="powered-by">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+<div class="theme-info">
+    <span id="busuanzi_container_site_uv">
+    您是第<span id="busuanzi_value_site_uv"></span>位访客
+	</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+
+  
+
+
+
+	
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99202, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+		
+		_hcwp.push({widget:"Stream", widget_id: 99202, xid: "2017/12/19/A005/"});
+		
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99202/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+	
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("CCXGdXDalH1hyMt9u5FRAVv5-gzGzoHsz", "sc3wFEfJBLnmiJOlD4M0Wm84");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  <!-- -->
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":80,"height":160,"superSample":2,"hOffset":0,"vOffset":-20},"mobile":{"show":true},"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/"});</script></body>
+</html>
+
+<script type="text/javascript" src="/js/src/canvas-nest.js"></script>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+
+
+
