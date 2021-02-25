@@ -281,6 +281,288 @@
             
               
                 
+                <a class="post-title-link" href="/2017/12/19/A005/" itemprop="url">
+                  RecyclerView之自定义LayoutManager
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-19T10:00:00+08:00" content="2017-12-19">
+              2017-12-19
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2017/12/19/A005/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2017/12/19/A005/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/12/19/A005/" class="leancloud_visitors" data-flag-title="RecyclerView之自定义LayoutManager">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="银子"><a href="#银子" class="headerlink" title="银子"></a><center>银子</center></h3><p>最近在进阶研究RecyclerView。主要包括其三个抽离出来的东东，包括ItemDecoration、LayoutManager、Animator。其中ItemDecoration花费我大概一天的时间。基本上对于ItemDecoration的布局原理较为熟悉，并发布了一bolg，本打算继续学Animator，粗略看了一下，发现：哇！函数好多，好麻烦。遂罢，还是先看LayoutManager吧，常规开发仅需要定义仨方法，似乎还蛮简单的。结果！！花费了整整一周的时间。终于打通！当然，对于LayoutManager的掌握只能说较熟悉，还不是特别融会贯通。<br>通过常规的搜索，发现，</p>
+<ol>
+<li>其实网上对于自定义LayoutManager的文章确实比较少。</li>
+<li>大部分都是简单对于少量数据的处理，没有涉及到回收机制，因为回收是需要自己做的。</li>
+<li>有些较好的实例也没能由浅入深的展开。<br>因此，本篇，在google，百度过后，emmm，小小的宣称，初步学习LayoutManager，这一篇就OJBK了。<br>整片文章布局大概如下：</li>
+<li>常规三个方法的说明，非常基础但是很重要的东西</li>
+<li>以常规竖向滑动为例，讲解如何自定义一个LayoutManager。
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/12/19/A005/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </li></ol></div>
+
+    <div>
+      
+    </div>
+	
+	<div>
+		
+	</div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/13/A004/" itemprop="url">
+                  RecyclerView之ItemDecoration
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-13T10:00:00+08:00" content="2017-12-13">
+              2017-12-13
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/学习技术/" itemprop="url" rel="index">
+                    <span itemprop="name">学习技术</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+			<span class="post-comments-count">
+				&nbsp;|&nbsp;
+				<span class="post-meta-item-icon">
+					<i class="fa fa-comment-o"></i>
+					<a href="/2017/12/13/A004/#comments" itemprop="discussionUrl">
+						<span class="post-comments-count hc-comment-count" data-xid="2017/12/13/A004/" itemprop="commentsCount"></span>
+					</a>
+				</span>
+			</span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/12/13/A004/" class="leancloud_visitors" data-flag-title="RecyclerView之ItemDecoration">
+               &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="银子"><a href="#银子" class="headerlink" title="银子"></a><center>银子</center></h3><p>RecyclerView的ItemDecoration，正如其名，是列表子项的装饰类。它其实是一个接口，方便我们对Item一些效果进行装饰。比如，常用的是添加分割线。<br>一个RecyclerView的装饰器绘制层次如下：<br><img src="https://upload-images.jianshu.io/upload_images/1638147-9e8a8158237c005c.png?imageMogr2/auto-orient/" alt="Decoration绘制层次"><br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/12/13/A004/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </p></div>
+
+    <div>
+      
+    </div>
+	
+	<div>
+		
+	</div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/09/10/J002/" itemprop="url">
                   JAVA踩的坑（一）
                 </a>
@@ -1366,149 +1648,11 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/20/First/" itemprop="url">
-                  写于：梦开始的地方
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-20T17:08:00+08:00" content="2016-05-20">
-              2016-05-20
-            </time>
-          </span>
-
-          
-            <span class="post-category">
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/学习技术/" itemprop="url" rel="index">
-                    <span itemprop="name">学习技术</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-			<span class="post-comments-count">
-				&nbsp;|&nbsp;
-				<span class="post-meta-item-icon">
-					<i class="fa fa-comment-o"></i>
-					<a href="/2016/05/20/First/#comments" itemprop="discussionUrl">
-						<span class="post-comments-count hc-comment-count" data-xid="2016/05/20/First/" itemprop="commentsCount"></span>
-					</a>
-				</span>
-			</span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/05/20/First/" class="leancloud_visitors" data-flag-title="写于：梦开始的地方">
-               &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><img src="http://o7iipar59.bkt.clouddn.com/4.jpg" alt="写于梦开始的地方"><br>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/05/20/First/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </p></div>
-
-    <div>
-      
-    </div>
-	
-	<div>
-		
-	</div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1546,7 +1690,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1563,7 +1707,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1653,7 +1797,7 @@
 <div class="copyright">
   
   &copy;  2016 - 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
